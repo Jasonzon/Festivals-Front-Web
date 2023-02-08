@@ -45,7 +45,7 @@ function Header({pages}:HeaderProps) {
                 textDecoration: 'none',
               }}
             >
-              LOGO
+              MY FESTIVAL
             </Typography>
           </Link>
 

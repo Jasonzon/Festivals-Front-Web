@@ -9,9 +9,11 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Header from "./Header"
+import Zones from "./Zones"
+import Creneaux from "./Creneaux"
 
 const theme = createTheme();
-const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"]]
+const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"]]
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/" element={<Home/>} />
           <Route path="/benevoles" element={<Benevoles/>} />
           <Route path="/jeux" element={<Jeux/>} />
+          <Route path="/zones" element={<Zones/>} />
+          <Route path="/creneaux" element={<Creneaux/>} />
           <Route path="*" element={<Home/>} />
         </Routes>
       </Router>
