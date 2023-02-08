@@ -5,12 +5,10 @@ import Benevoles from "./Benevoles"
 import Jeux from "./Jeux"
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Header from "./Header"
 import Zones from "./Zones"
 import Creneaux from "./Creneaux"
+import Zone from "./Zone"
 
 const theme = createTheme();
 const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"]]
@@ -26,6 +24,7 @@ function App() {
           <Route path="/benevoles" element={<Benevoles/>} />
           <Route path="/jeux" element={<Jeux/>} />
           <Route path="/zones" element={<Zones/>} />
+          <Route path="/zones/:id" element={<Zone/>}></Route>
           <Route path="/creneaux" element={<Creneaux/>} />
           <Route path="*" element={<Home/>} />
         </Routes>
