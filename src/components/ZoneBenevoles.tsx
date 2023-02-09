@@ -4,13 +4,12 @@ import Card from "@mui/material/Card"
 import Typography from "@mui/material/Typography"
 import CardHeader from "@mui/material/CardHeader"
 
-interface creneau {
-    creneau_id: number,
-    creneau_debut: Date,
-    creneau_fin: Date
+interface zone {
+    zone_id: number,
+    zone_name: string
 }
 
-function CreneauBenevoles({creneau_id,creneau_debut,creneau_fin}:creneau) {
+function ZoneBenevoles({zone_id,zone_name}:zone) {
 
     const [benevoles, setBenevoles] = useState([])
 
@@ -19,14 +18,14 @@ function CreneauBenevoles({creneau_id,creneau_debut,creneau_fin}:creneau) {
     },[])
 
     async function getBenevoles() {
-        const res = await fetch(`http://localhost:5000/benevole/creneau/${creneau_id}`)
+        const res = await fetch(`http://localhost:5000/benevole/zone/${zone_id}`)
         const parseRes = await res.json()
         setBenevoles(parseRes)
     }
 
     return (
         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <CardHeader title={creneau_debut.toString().slice(11,16) + " - " + creneau_fin.toString().slice(11,16)}/>
+            <CardHeader title={zone_name}/>
             <CardContent sx={{ flexGrow: 1 }}>
                 {benevoles.map(({benevole_id,benevole_nom,benevole_prenom,benevole_mail}) => 
                     <Typography key={benevole_id} gutterBottom>{benevole_prenom + " " + benevole_nom}</Typography>
@@ -36,4 +35,4 @@ function CreneauBenevoles({creneau_id,creneau_debut,creneau_fin}:creneau) {
     )
 }
 
-export default CreneauBenevoles
+export default ZoneBenevoles

@@ -23,7 +23,7 @@ function Zones() {
     return (
         <Container sx={{ py: 8 }} maxWidth="md">
             <Grid container spacing={4}>
-                {zones.map(({zone_name,zone_id}) => (
+                {zones.sort((a:{zone_name:string,zone_id:number},b:{zone_name:string,zone_id:number}) => a.zone_name.localeCompare(b.zone_name)).map(({zone_name,zone_id}) => (
                 <Grid item key={zone_id} xs={12} sm={6} md={4}>
                     <Link to={`/zones/${zone_id}`} style={{color:"black",textDecoration:"none"}}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
