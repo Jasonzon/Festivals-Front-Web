@@ -22,8 +22,9 @@ function Creneaux() {
 
     return (
         <Container sx={{ py: 8 }} maxWidth="md">
+            <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">Creneaux</Typography>
             <Grid container spacing={4}>
-                {creneaux.sort((a:{creneau_id:number,creneau_debut:Date,creneau_fin:Date},b:{creneau_id:number,creneau_debut:Date,creneau_fin:Date}) => a.creneau_debut.getTime() - b.creneau_debut.getTime()).map(({creneau_id,creneau_debut,creneau_fin}:{creneau_id:number,creneau_debut:Date,creneau_fin:Date}) => (
+                {creneaux.sort((a:{creneau_id:number,creneau_debut:Date,creneau_fin:Date},b:{creneau_id:number,creneau_debut:Date,creneau_fin:Date}) => new Date(a.creneau_debut).getTime() - new Date(b.creneau_debut).getTime()).map(({creneau_id,creneau_debut,creneau_fin}:{creneau_id:number,creneau_debut:Date,creneau_fin:Date}) => (
                 <Grid item key={creneau_id} xs={12} sm={6} md={4}>
                     <Link to={`/creneaux/${creneau_id}`} style={{color:"black",textDecoration:"none"}}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

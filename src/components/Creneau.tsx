@@ -11,8 +11,8 @@ function Creneau() {
     const {id} = useParams()
 
     useEffect(() => {
-        getCreneau()
         getZones()
+        getCreneau()
     },[])
 
     const [creneau, setCreneau] = useState({creneau_id:null,creneau_debut:"",creneau_fin:""})
@@ -39,6 +39,9 @@ function Creneau() {
                     <ZoneBenevoles zone_id={zone_id} zone_name={zone_name} />
                 </Grid>
                 ))}
+                {zones.length === 0 && creneau.creneau_id !== null && 
+                    <Typography style={{marginTop:"2rem",marginLeft:"4rem"}} variant="h4" component="h4">Pas de bénévoles</Typography>
+                }
             </Grid>
         </Container>
     )

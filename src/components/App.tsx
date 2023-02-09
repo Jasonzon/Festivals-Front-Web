@@ -9,6 +9,7 @@ import Header from "./Header"
 import Zones from "./Zones"
 import Creneaux from "./Creneaux"
 import Zone from "./Zone"
+import Creneau from "./Creneau"
 
 const theme = createTheme();
 const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"]]
@@ -26,6 +27,7 @@ function App() {
           <Route path="/zones" element={<Zones/>} />
           <Route path="/zones/:id" element={<Zone/>}></Route>
           <Route path="/creneaux" element={<Creneaux/>} />
+          <Route path="/creneaux/:id" element={<Creneau/>} />
           <Route path="*" element={<Home/>} />
         </Routes>
       </Router>

@@ -10,8 +10,8 @@ function Zone() {
     const {id} = useParams()
 
     useEffect(() => {
-        getZone()
         getCreneaux()
+        getZone()
     },[])
 
     const [creneaux, setCreneaux] = useState([])
@@ -38,6 +38,9 @@ function Zone() {
                     <CreneauBenevoles creneau_id={creneau_id} creneau_debut={creneau_debut} creneau_fin={creneau_fin} />
                 </Grid>
                 ))}
+                {creneaux.length === 0 && zone.zone_id !== null &&
+                    <Typography style={{marginTop:"2rem",marginLeft:"4rem"}} variant="h3" component="h3">Pas de bénévoles</Typography>
+                }
             </Grid>
         </Container>
     )
