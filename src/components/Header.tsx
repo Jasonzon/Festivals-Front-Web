@@ -3,6 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Container from '@mui/material/Container';
@@ -58,6 +59,7 @@ function Header({pages}:HeaderProps) {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
+              <MenuIcon/>
             </IconButton>
             <Menu
               id="menu-appbar"
