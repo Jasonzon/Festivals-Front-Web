@@ -38,6 +38,7 @@ function Connect({user, setUser}:UserProps) {
 
   return (
       <Container component="main" maxWidth="xs">
+        {user.polyuser_id === 0 &&
         <Box sx={{marginTop: 8,display: 'flex',flexDirection: 'column',alignItems: 'center',}}>
           <Typography component="h1" variant="h5">Sign in</Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -78,6 +79,7 @@ function Connect({user, setUser}:UserProps) {
             </Grid>
           </Box>
         </Box>
+      }
       </Container>
   );
 }
