@@ -1,14 +1,24 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
+import {Link} from "react-router-dom"
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {UserProps} from "./App"
+import {useNavigate} from "react-router-dom"
+import {useEffect} from "react"
 
 function Connect({user, setUser}:UserProps) {
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user.polyuser_id !== 0) {
+      navigate("/profil")
+    }
+  },[user])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -60,14 +70,9 @@ function Connect({user, setUser}:UserProps) {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link to="/register" style={{textDecoration:"underline",color:"black"}}>
+                  Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>

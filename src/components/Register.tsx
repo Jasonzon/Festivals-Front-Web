@@ -1,24 +1,42 @@
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {UserProps} from "./App"
+import {Link, useNavigate} from "react-router-dom"
+import {useEffect} from "react"
 
 function Register({user, setUser}:UserProps) {
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user.polyuser_id !== 0) {
+      navigate("/profil")
+    }
+  },[user])
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const res = await fetch(`http://localhost:5000/polyuser/mail/${data.get("mail")}`, {
+      method: "GET"
+    })
+    const parseRes = await res.json()
+    if (parseRes.length === 0) {
+        const body = {mail:data.get("email"),nom:data.get("lastName"),prenom:data.get("firstName"),password:data.get("password")}
+        console.log(body)
+        const res2 = await fetch("http://localhost:5000/polyuser", {
+            method: "POST",
+            headers: {"Content-Type" : "application/json"},
+            body:JSON.stringify(body)
+        })
+        const parseRes2 = await res2.json()
+        localStorage.setItem("token",parseRes2.token)
+        setUser(parseRes2.rows[0])
+    }
   };
 
   return (
@@ -81,7 +99,7 @@ function Register({user, setUser}:UserProps) {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link to="/connect" style={{textDecoration:"underline",color:"black"}}>
                   Already have an account? Sign in
                 </Link>
               </Grid>

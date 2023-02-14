@@ -9,9 +9,10 @@ import Zones from "./Zones"
 import Creneaux from "./Creneaux"
 import Zone from "./Zone"
 import Creneau from "./Creneau"
-import { createContext, useEffect, useState } from "react"
+import {useEffect, useState} from "react"
 import Register from "./Register"
 import Connect from "./Connect"
+import Profil from "./Profil"
 
 const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"],["Profil","/connect"]]
 
@@ -71,6 +72,7 @@ function App() {
           <Route path="/creneaux/:id" element={<Creneau/>} />
           <Route path="/register" element={<Register user={user} setUser={setUser} />} />
           <Route path="/connect" element={<Connect user={user} setUser={setUser} />} />
+          <Route path="/profil" element={<Profil user={user} setUser={setUser} />} />
           <Route path="*" element={<Home/>} />
         </Routes>
       </Router>
