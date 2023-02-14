@@ -106,7 +106,7 @@ function Header({pages}:HeaderProps) {
           >
             MY FESTIVAL
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', gap: "1rem" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', gap: "1rem", justifyContent:"flex-end"}}}>
             {pages.map((page) => (
               <Link to={page[1]} style={{textDecoration:"none"}} key={page[0]}>
                 <Button 

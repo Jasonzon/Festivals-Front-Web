@@ -13,13 +13,30 @@ import { createContext, useEffect, useState } from "react"
 import Register from "./Register"
 import Connect from "./Connect"
 
-const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"]]
+const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"],["Profil","/connect"]]
 
-const UserContext = createContext([{},() => {}])
+interface User {
+  polyuser_id: number
+  polyuser_mail: string
+  polyuser_nom: string
+  polyuser_prenom: string
+  polyuser_role: string
+}
+
+export interface UserProps {
+  user: User,
+  setUser: React.Dispatch<React.SetStateAction<User>>
+}
 
 function App() {
 
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState<User>({
+    polyuser_id:0,
+    polyuser_nom:"",
+    polyuser_prenom:"",
+    polyuser_mail:"",
+    polyuser_role:""
+  })
 
   async function auth() {
     if (localStorage.token) {
@@ -41,7 +58,6 @@ function App() {
   },[])
 
   return (
-    <UserContext.Provider value={[user, setUser]}>
       <Router>
         <CssBaseline />
         <Header pages={pages} />
@@ -53,12 +69,11 @@ function App() {
           <Route path="/zones/:id" element={<Zone/>}></Route>
           <Route path="/creneaux" element={<Creneaux/>} />
           <Route path="/creneaux/:id" element={<Creneau/>} />
-          <Route path="/register" element={<Register/>} />
-          <Route path="/connect" element={<Connect/>} />
+          <Route path="/register" element={<Register user={user} setUser={setUser} />} />
+          <Route path="/connect" element={<Connect user={user} setUser={setUser} />} />
           <Route path="*" element={<Home/>} />
         </Routes>
       </Router>
-    </UserContext.Provider>
   )
 }
 
