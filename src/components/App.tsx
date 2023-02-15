@@ -13,6 +13,10 @@ import {useEffect, useState} from "react"
 import Register from "./Register"
 import Connect from "./Connect"
 import Profil from "./Profil"
+import AddJeu from "./AddJeu"
+import AddBenevole from "./AddBenevole"
+import AddCreneau from "./AddCreneau"
+import AddZone from "./AddZone"
 
 const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"],["Profil","/connect"]]
 
@@ -64,11 +68,16 @@ function App() {
         <Header pages={pages} />
         <Routes>
           <Route path="/" element={<Home/>} />
-          <Route path="/benevoles" element={<Benevoles/>} />
-          <Route path="/jeux" element={<Jeux/>} />
-          <Route path="/zones" element={<Zones/>} />
+          <Route path="/benevoles" element={<Benevoles user={user} setUser={setUser} />} />
+          <Route path="/benevoles/ajouter" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <AddBenevole user={user} setUser={setUser} />} />
+          <Route path="/benevoles/modifier/:id" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <AddBenevole user={user} setUser={setUser} />} />
+          <Route path="/jeux" element={<Jeux user={user} setUser={setUser} />} />
+          <Route path="/jeux/ajouter" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
+          <Route path="/zones" element={<Zones user={user} setUser={setUser} />} />
+          <Route path="/zones/ajouter" element={user.polyuser_id === 0 ? <Zones user={user} setUser={setUser} /> : <AddZone user={user} setUser={setUser} />} />
           <Route path="/zones/:id" element={<Zone/>}></Route>
-          <Route path="/creneaux" element={<Creneaux/>} />
+          <Route path="/creneaux" element={<Creneaux user={user} setUser={setUser} />} />
+          <Route path="/creneaux/ajouter" element={user.polyuser_id === 0 ? <Creneaux user={user} setUser={setUser} /> : <AddCreneau user={user} setUser={setUser} />} />
           <Route path="/creneaux/:id" element={<Creneau/>} />
           <Route path="/register" element={<Register user={user} setUser={setUser} />} />
           <Route path="/connect" element={<Connect user={user} setUser={setUser} />} />
