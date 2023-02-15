@@ -31,8 +31,7 @@ function AddBenevole({user, setUser}:UserProps) {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const data = new FormData(event.currentTarget)
-        const body = {nom:data.get("lastName"),prenom:data.get("firstName"),mail:data.get("email")}
+        const body = {nom:benevole.benevole_nom,prenom:benevole.benevole_prenom,mail:benevole.benevole_mail}
         if (id === undefined) {
             const res = await fetch("http://localhost:5000/benevole", {
                 method: "POST",

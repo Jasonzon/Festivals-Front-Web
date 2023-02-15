@@ -73,11 +73,14 @@ function App() {
           <Route path="/benevoles/modifier/:id" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <AddBenevole user={user} setUser={setUser} />} />
           <Route path="/jeux" element={<Jeux user={user} setUser={setUser} />} />
           <Route path="/jeux/ajouter" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
+          <Route path="/jeux/modifier/:id" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
           <Route path="/zones" element={<Zones user={user} setUser={setUser} />} />
           <Route path="/zones/ajouter" element={user.polyuser_id === 0 ? <Zones user={user} setUser={setUser} /> : <AddZone user={user} setUser={setUser} />} />
+          <Route path="/zones/modifier/:id" element={user.polyuser_id === 0 ? <Zones user={user} setUser={setUser} /> : <AddZone user={user} setUser={setUser} />} />
           <Route path="/zones/:id" element={<Zone/>}></Route>
           <Route path="/creneaux" element={<Creneaux user={user} setUser={setUser} />} />
           <Route path="/creneaux/ajouter" element={user.polyuser_id === 0 ? <Creneaux user={user} setUser={setUser} /> : <AddCreneau user={user} setUser={setUser} />} />
+          <Route path="/creneaux/modifier/:id" element={user.polyuser_id === 0 ? <Creneaux user={user} setUser={setUser} /> : <AddCreneau user={user} setUser={setUser} />} />
           <Route path="/creneaux/:id" element={<Creneau/>} />
           <Route path="/register" element={<Register user={user} setUser={setUser} />} />
           <Route path="/connect" element={<Connect user={user} setUser={setUser} />} />
