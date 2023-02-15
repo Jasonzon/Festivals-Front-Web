@@ -52,7 +52,7 @@ function AddCreneau({user, setUser}:UserProps) {
     return (
         <Container component="main" maxWidth="xs">
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
                     id="datetime-local"
