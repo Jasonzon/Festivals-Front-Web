@@ -51,7 +51,7 @@ function Jeux({user, setUser}:UserProps) {
     const res = await fetch(`http://localhost:5000/jeu/${id}`, {
         method: "DELETE"
     })
-}
+  }
 
   return (
       <Container sx={{ py: 8 }} maxWidth="md">

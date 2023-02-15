@@ -36,7 +36,6 @@ function AddJeu({user, setUser}:UserProps) {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const body = {name:jeu.jeu_name,type:jeu.jeu_type}
-        console.log(body)
         if (id === undefined) {
             const res = await fetch("http://localhost:5000/jeu", {
                 method: "POST",
