@@ -30,7 +30,8 @@ function Zones({user, setUser}:UserProps) {
     async function deleteZone(id: number) {
         setZones(zones.slice().filter(({zone_id}) => zone_id !== id))
         const res = await fetch(`http://localhost:5000/zone/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: {token: localStorage.token}
         })
     }
 

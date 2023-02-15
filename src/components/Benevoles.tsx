@@ -32,7 +32,8 @@ function Benevoles({user, setUser}:UserProps) {
     async function deleteBenevole(id: number) {
         setBenevoles(benevoles.slice().filter(({benevole_id}) => benevole_id !== id))
         const res = await fetch(`http://localhost:5000/benevole/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: {token: localStorage.token}
         })
     }
 

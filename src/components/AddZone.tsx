@@ -35,14 +35,14 @@ function AddZone({user, setUser}:UserProps) {
         if (id === undefined) {
             const res = await fetch("http://localhost:5000/zone", {
                 method: "POST",
-                headers: {"Content-Type" : "application/json"},
+                headers: {"Content-Type" : "application/json",token: localStorage.token},
                 body:JSON.stringify(body)
             })
         }
         else {
             const res = await fetch(`http://localhost:5000/zone/${id}`, {
                 method: "PUT",
-                headers: {"Content-Type" : "application/json"},
+                headers: {"Content-Type" : "application/json",token: localStorage.token},
                 body:JSON.stringify(body)
             })
         }

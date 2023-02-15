@@ -30,7 +30,8 @@ function Creneaux({user, setUser}:UserProps) {
     async function deleteCreneau(id: number) {
         setCreneaux(creneaux.slice().filter(({creneau_id}) => creneau_id !== id))
         const res = await fetch(`http://localhost:5000/creneau/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: {token: localStorage.token}
         })
     }
 

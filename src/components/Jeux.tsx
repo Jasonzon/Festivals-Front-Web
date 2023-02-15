@@ -49,7 +49,8 @@ function Jeux({user, setUser}:UserProps) {
   async function deleteJeu(id: number) {
     setJeux(jeux.slice().filter(({jeu_id}) => jeu_id !== id))
     const res = await fetch(`http://localhost:5000/jeu/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {token: localStorage.token}
     })
   }
 
