@@ -20,7 +20,7 @@ interface TypeJeu {
   enfant: boolean,
   famille: boolean,
   ambiance: boolean,
-  initié: boolean
+  initie: boolean
   expert: boolean
 }
 
@@ -33,17 +33,25 @@ function Jeux({user, setUser}:UserProps) {
   const [jeux, setJeux] = useState([])
   const [search, setSearch] = useState("")
   const [check, setCheck] = useState<boolean[]>([])
-  const [check2, setCheck2] = useState<TypeJeu>({enfant:true,famille:true,ambiance:true,initié:true,expert:true})
+  const [check2, setCheck2] = useState<TypeJeu>({enfant:true,famille:true,ambiance:true,initie:true,expert:true})
+  const [zones, setZones] = useState<{zone_name:string,zone_id:number}[]>([])
 
   useEffect(() => {
       getJeux()
+      getZones()
   },[])
 
   async function getJeux() {
       const res = await fetch("http://localhost:5000/jeu")
       const parseRes = await res.json()
       setJeux(parseRes)
-      setCheck(parseRes.map(() => true))
+  }
+
+  async function getZones() {
+    const res = await fetch("http://localhost:5000/zone")
+    const parseRes = await res.json()
+    setZones(parseRes)
+    setCheck(parseRes.map(() => true))
   }
 
   async function deleteJeu(id: number) {
@@ -64,10 +72,10 @@ function Jeux({user, setUser}:UserProps) {
           <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
               <FormLabel component="legend">Zones</FormLabel>
               <FormGroup>
-                  {jeux.filter(({zone_id}:{zone_id:number}) => zone_id !== null).map(({zone_name}:{zone_name:string},index) => 
+                  {zones.map(({zone_name,zone_id}:{zone_name:string,zone_id:number},index) => 
                   <FormControlLabel
-                      key={index}
-                      control={<Checkbox checked={check[index]} onChange={() => setCheck(check.slice().map((bool,id) => index === id ? !bool : bool))} name="gilad" />}
+                      key={zone_id}
+                      control={<Checkbox checked={check[index]} onChange={() => setCheck(check.slice().map((bool,id) => index === id ? !bool : bool))}/>}
                       label={zone_name}
                   />      
                   )}    
@@ -89,8 +97,8 @@ function Jeux({user, setUser}:UserProps) {
                   label="ambiance"
                 />    
                 <FormControlLabel
-                  control={<Checkbox checked={check2.initié} onChange={() => setCheck2({...check2,initié:!check2.initié})}/>}
-                  label="initié"
+                  control={<Checkbox checked={check2.initie} onChange={() => setCheck2({...check2,initie:!check2.initie})}/>}
+                  label="initie"
                 />    
                 <FormControlLabel
                   control={<Checkbox checked={check2.expert} onChange={() => setCheck2({...check2,expert:!check2.expert})}/>}
@@ -101,7 +109,7 @@ function Jeux({user, setUser}:UserProps) {
           </Box>
         </Box>
         <Grid container spacing={4}>
-          {jeux.filter(({jeu_id,jeu_name,jeu_type}:{jeu_id:number,jeu_name:string,jeu_type:keyof TypeJeu},index) => check[index] && check2[jeu_type] && jeu_name.toLowerCase().includes(search.toLowerCase())).map(({jeu_id,jeu_name,jeu_type},index) => (
+          {jeux.filter(({jeu_id,jeu_name,jeu_type,zones_affectees}:{jeu_id:number,jeu_name:string,jeu_type:keyof TypeJeu,zones_affectees:string[]}) => zones.slice().filter(({zone_name,zone_id}:{zone_name:string,zone_id:number},index) => zones_affectees.includes(zone_name) && check[index] === true).length !== 0 && check2[jeu_type] === true && jeu_name.toLowerCase().includes(search.toLowerCase())).map(({jeu_id,jeu_name,jeu_type},index) => (
             <Grid item key={jeu_id} xs={12} sm={6} md={4}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent sx={{ flexGrow: 1 }}>
@@ -112,6 +120,7 @@ function Jeux({user, setUser}:UserProps) {
                   <CardActions>
                       <Button onClick={() => navigate(`/jeux/modifier/${jeu_id}`)} size="small">MODIFIER</Button>
                       {del !== index ? <Button size="small" onClick={() => setDel(index)}>SUPPRIMER</Button> : <Button onClick={() => deleteJeu(jeu_id)} size="small">CONFIRMER</Button>}
+                      <Button onClick={() => navigate(`/jeux/affecter/${jeu_id}`)} size="small">AFFECTER</Button>
                   </CardActions> }
               </Card>
             </Grid>

@@ -17,6 +17,7 @@ import AddJeu from "./AddJeu"
 import AddBenevole from "./AddBenevole"
 import AddCreneau from "./AddCreneau"
 import AddZone from "./AddZone"
+import Affectation from "./Affectation"
 
 const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"],["Profil","/connect"]]
 
@@ -74,6 +75,7 @@ function App() {
           <Route path="/jeux" element={<Jeux user={user} setUser={setUser} />} />
           <Route path="/jeux/ajouter" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
           <Route path="/jeux/modifier/:id" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
+          <Route path="/jeux/affecter/:id" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <Affectation user={user} setUser={setUser} />} />
           <Route path="/zones" element={<Zones user={user} setUser={setUser} />} />
           <Route path="/zones/ajouter" element={user.polyuser_id === 0 ? <Zones user={user} setUser={setUser} /> : <AddZone user={user} setUser={setUser} />} />
           <Route path="/zones/modifier/:id" element={user.polyuser_id === 0 ? <Zones user={user} setUser={setUser} /> : <AddZone user={user} setUser={setUser} />} />
