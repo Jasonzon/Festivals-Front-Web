@@ -13,7 +13,7 @@ function AddCreneau({user, setUser}:UserProps) {
 
     const {id} = useParams()
 
-    const [creneau, setCreneau] = useState({creneau_id:0,creneau_debut:"",creneau_fin:""})
+    const [creneau, setCreneau] = useState<{creneau_debut:Date,creneau_fin:Date}>({creneau_debut:new Date(),creneau_fin:new Date()})
 
     async function getCreneau() {
         if (id !== undefined) {
@@ -21,7 +21,7 @@ function AddCreneau({user, setUser}:UserProps) {
                 method: "GET"
             })
             const parseRes = await res.json()
-            setCreneau(parseRes)
+            setCreneau({creneau_debut:new Date(parseRes.creneau_debut),creneau_fin:new Date(parseRes.creneau_fin)})
         }
     }
 
@@ -31,7 +31,7 @@ function AddCreneau({user, setUser}:UserProps) {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const body = {debut:creneau.creneau_debut,fin:creneau.creneau_fin}
+        const body = {debut:creneau.creneau_debut.toUTCString(),fin:creneau.creneau_fin.toUTCString()}
         if (id === undefined) {
             const res = await fetch("http://localhost:5000/creneau", {
                 method: "POST",
@@ -58,7 +58,8 @@ function AddCreneau({user, setUser}:UserProps) {
                     id="datetime-local"
                     label="Début du créneau"
                     type="datetime-local"
-                    defaultValue={new Date()}
+                    value={creneau.creneau_debut.toISOString().substring(0, 16)}
+                    onChange={(e) => setCreneau({...creneau,creneau_debut:new Date(e.target.value)})}
                     InputLabelProps={{
                     shrink: true,
                     }}
@@ -69,7 +70,8 @@ function AddCreneau({user, setUser}:UserProps) {
                     id="datetime-local"
                     label="Fin du créneau"
                     type="datetime-local"
-                    defaultValue={new Date()}
+                    value={creneau.creneau_fin.toISOString().substring(0, 16)}
+                    onChange={(e) => setCreneau({...creneau,creneau_fin:new Date(e.target.value)})}
                     InputLabelProps={{
                     shrink: true,
                     }}
