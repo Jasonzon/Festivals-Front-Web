@@ -50,31 +50,29 @@ function AddCreneau({user, setUser}:UserProps) {
       }
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="sm">
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                     id="datetime-local"
                     label="Début du créneau"
                     type="datetime-local"
                     value={creneau.creneau_debut.toISOString().substring(0, 16)}
                     onChange={(e) => setCreneau({...creneau,creneau_debut:new Date(e.target.value)})}
-                    InputLabelProps={{
-                    shrink: true,
-                    }}
+                    InputLabelProps={{shrink: true}}
+                    fullWidth
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                     id="datetime-local"
                     label="Fin du créneau"
                     type="datetime-local"
                     value={creneau.creneau_fin.toISOString().substring(0, 16)}
                     onChange={(e) => setCreneau({...creneau,creneau_fin:new Date(e.target.value)})}
-                    InputLabelProps={{
-                    shrink: true,
-                    }}
+                    InputLabelProps={{shrink: true}}
+                    fullWidth
                 />
               </Grid>
             </Grid>

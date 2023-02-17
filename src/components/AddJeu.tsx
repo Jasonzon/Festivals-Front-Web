@@ -10,6 +10,7 @@ import Select from "@mui/material/Select"
 import FormControl from "@mui/material/FormControl"
 import MenuItem from "@mui/material/MenuItem"
 import InputLabel from "@mui/material/InputLabel"
+import { Typography } from "@mui/material"
 
 function AddJeu({user, setUser}:UserProps) {
 
@@ -19,18 +20,30 @@ function AddJeu({user, setUser}:UserProps) {
 
     const [jeu, setJeu] = useState({jeu_id:0,jeu_name:"",jeu_type:"enfant"})
 
+    const [affectations, setAffectations] = useState([])
+
+    const [zones, setZones] = useState([])
+
+    const [zone, setZone] = useState({zone_id:0,zone_name:""})
+
     async function getJeu() {
-        if (id !== undefined) {
-            const res = await fetch(`http://localhost:5000/jeu/${id}`, {
-                method: "GET"
-            })
-            const parseRes = await res.json()
-            setJeu(parseRes)
-        }
+        const res = await fetch(`http://localhost:5000/jeu/${id}`, {
+            method: "GET"
+        })
+        const parseRes = await res.json()
+        setJeu(parseRes)
+    }
+
+    async function getAffectations() {
+        const res = await fetch(`http://localhost:5000/affectation/jeu/${id}`)
+        const parseRes = await res.json()
+        setAffectations(parseRes)
+        getZones()
     }
 
     useEffect(() => {
         getJeu()
+        getAffectations()
     },[])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -51,7 +64,28 @@ function AddJeu({user, setUser}:UserProps) {
             })
         }
         navigate("/jeux")
-      }
+    }
+
+    async function removeZone(affectation:number) {
+        const res = await fetch(`http://localhost:5000/affectation/${affectation}`, {
+            method: "DELETE",
+            headers: {token: localStorage.token}
+        })
+        const parseRes = await res.json()
+        setAffectations(affectations.slice().filter(({affectation_id}) => affectation_id !== affectation))
+    }
+
+    async function getZones() {
+        const res = await fetch("http://localhost:5000/zone")
+        const parseRes = await res.json()
+        setZones(parseRes)
+    }
+
+    useEffect(() => {
+        if (zones.length !== 0) {
+            setZone(zones[0])
+        }
+    },[zones])
 
     return (
         <Container component="main" maxWidth="xs">
@@ -71,24 +105,45 @@ function AddJeu({user, setUser}:UserProps) {
               <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Age</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={jeu.jeu_type}
-                    label="Type"
-                    onChange={(e) => setJeu({...jeu,jeu_type:e.target.value})}
-                >
-                    <MenuItem value={"enfant"}>Enfant</MenuItem>
-                    <MenuItem value={"famille"}>Famille</MenuItem>
-                    <MenuItem value={"ambiance"}>Ambiance</MenuItem>
-                    <MenuItem value={"initié"}>Initié</MenuItem>
-                    <MenuItem value={"expert"}>Expert</MenuItem>
-                </Select>
+                    <Select
+                        value={jeu.jeu_type}
+                        label="Type"
+                        onChange={(e) => setJeu({...jeu,jeu_type:e.target.value})}
+                    >
+                        <MenuItem value={"enfant"}>Enfant</MenuItem>
+                        <MenuItem value={"famille"}>Famille</MenuItem>
+                        <MenuItem value={"ambiance"}>Ambiance</MenuItem>
+                        <MenuItem value={"initié"}>Initié</MenuItem>
+                        <MenuItem value={"expert"}>Expert</MenuItem>
+                    </Select>
                 </FormControl>
               </Grid>
+              <Typography variant="h4" component="h4">Zones</Typography>
+              <Grid item xs={12}>
+                {affectations.map(({zone_id,zone_name,affectation_id}) => 
+                    <Box display="flex" alignItems="center">
+                        <Typography>{zone_name}</Typography>
+                        <Button onClick={() => removeZone(affectation_id)}>ENLEVER</Button>
+                    </Box>
+                )}
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Zone</InputLabel>
+                        <Select
+                            value={zone.zone_name}
+                            label="Zone"
+                            onChange={(e) => setZone({...zone,zone_name:e.target.value})}
+                        >
+                            {zones.filter(({zone_name}) => !affectations.some((zone:{zone_name:string}) => zone.zone_name === zone_name)).map(({zone_id,zone_name}) => 
+                                <MenuItem value={zone_name}>{zone_name}</MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                {id === undefined ? "AJOUTER" : "MODIFIER"}
+                CONFIRMER
             </Button>
           </Box>
         </Container>

@@ -30,28 +30,19 @@ function Jeux({user, setUser}:UserProps) {
 
   const navigate = useNavigate()
 
-  const [jeux, setJeux] = useState([])
-  const [search, setSearch] = useState("")
-  const [check, setCheck] = useState<boolean[]>([])
+  const [jeux, setJeux] = useState<{jeu_id:number,jeu_name:string,jeu_type:keyof TypeJeu,zones_affectees:string[]}[]>([])
+  const [searchName, setSearchName] = useState("")
+  const [searchZone, setSearchZone] = useState("")
   const [check2, setCheck2] = useState<TypeJeu>({enfant:true,famille:true,ambiance:true,initie:true,expert:true})
-  const [zones, setZones] = useState<{zone_name:string,zone_id:number}[]>([])
 
   useEffect(() => {
       getJeux()
-      getZones()
   },[])
 
   async function getJeux() {
       const res = await fetch("http://localhost:5000/jeu")
       const parseRes = await res.json()
       setJeux(parseRes)
-  }
-
-  async function getZones() {
-    const res = await fetch("http://localhost:5000/zone")
-    const parseRes = await res.json()
-    setZones(parseRes)
-    setCheck(parseRes.map(() => true))
   }
 
   async function deleteJeu(id: number) {
@@ -67,20 +58,8 @@ function Jeux({user, setUser}:UserProps) {
         <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">Jeux</Typography>
         {user.polyuser_role === "admin" && <Button onClick={() => navigate("/jeux/ajouter")} variant="contained" style={{marginBottom:"1rem"}}>AJOUTER</Button>}
         <Box>
-          <TextField id="outlined-basic" label="Recherche" variant="outlined" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <Box sx={{ display: 'flex' }}>
-          <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-              <FormLabel component="legend">Zones</FormLabel>
-              <FormGroup>
-                  {zones.map(({zone_name,zone_id}:{zone_name:string,zone_id:number},index) => 
-                  <FormControlLabel
-                      key={zone_id}
-                      control={<Checkbox checked={check[index]} onChange={() => setCheck(check.slice().map((bool,id) => index === id ? !bool : bool))}/>}
-                      label={zone_name}
-                  />      
-                  )}    
-              </FormGroup>
-          </FormControl>
+          <TextField label="Recherche par nom" variant="outlined" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+          <TextField sx={{ ml: 2 }} label="Recherche par zone" variant="outlined" value={searchZone} onChange={(e) => setSearchZone(e.target.value)} />
           <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
               <FormLabel component="legend">Types</FormLabel>
               <FormGroup>
@@ -106,21 +85,24 @@ function Jeux({user, setUser}:UserProps) {
                 />        
               </FormGroup>
           </FormControl>
-          </Box>
         </Box>
         <Grid container spacing={4}>
-          {jeux.filter(({jeu_id,jeu_name,jeu_type,zones_affectees}:{jeu_id:number,jeu_name:string,jeu_type:keyof TypeJeu,zones_affectees:string[]}) => zones.slice().filter(({zone_name,zone_id}:{zone_name:string,zone_id:number},index) => zones_affectees.includes(zone_name) && check[index] === true).length !== 0 && check2[jeu_type] === true && jeu_name.toLowerCase().includes(search.toLowerCase())).map(({jeu_id,jeu_name,jeu_type},index) => (
+          {jeux.filter(({jeu_id,jeu_name,jeu_type,zones_affectees}:{jeu_id:number,jeu_name:string,jeu_type:keyof TypeJeu,zones_affectees:string[]}) => (zones_affectees.length === 0 || zones_affectees.some((zone) => zone.toLowerCase().includes(searchZone.toLowerCase()))) && check2[jeu_type] && jeu_name.toLowerCase().includes(searchName.toLowerCase())).map(({jeu_id,jeu_name,jeu_type,zones_affectees},index) => (
             <Grid item key={jeu_id} xs={12} sm={6} md={4}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography gutterBottom variant="h5" component="h2">{jeu_name}</Typography>
+                  <Typography sx={{fontWeight: 'bold'}}>Catégorie</Typography>
                   <Typography>{jeu_type}</Typography>
+                  <Typography sx={{fontWeight: 'bold'}}>Zones</Typography>
+                  {zones_affectees.map((zone) =>
+                      <Typography>{zone}</Typography>
+                  )}
                 </CardContent>
                 {user.polyuser_role === "admin" &&
                   <CardActions>
                       <Button onClick={() => navigate(`/jeux/modifier/${jeu_id}`)} size="small">MODIFIER</Button>
                       {del !== index ? <Button size="small" onClick={() => setDel(index)}>SUPPRIMER</Button> : <Button onClick={() => deleteJeu(jeu_id)} size="small">CONFIRMER</Button>}
-                      <Button onClick={() => navigate(`/jeux/affecter/${jeu_id}`)} size="small">AFFECTER</Button>
                   </CardActions> }
               </Card>
             </Grid>
