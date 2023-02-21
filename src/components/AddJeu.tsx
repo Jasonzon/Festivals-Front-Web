@@ -11,6 +11,7 @@ import FormControl from "@mui/material/FormControl"
 import MenuItem from "@mui/material/MenuItem"
 import InputLabel from "@mui/material/InputLabel"
 import { Typography } from "@mui/material"
+import CircularProgress from "@mui/material/CircularProgress"
 
 interface Affectation {
     affectation_id:number,
@@ -28,30 +29,17 @@ function AddJeu({user, setUser}:UserProps) {
 
     const [jeu, setJeu] = useState({jeu_id:0,jeu_name:"",jeu_type:"enfant"})
 
-    const [affectations, setAffectations] = useState<Affectation[]>([])
-
-    const [zones, setZones] = useState<{zone_id:number,zone_name:string}[]>([])
-
-    const [zone, setZone] = useState({zone_id:0,zone_name:""})
-
     async function getJeu() {
         const res = await fetch(`http://localhost:5000/jeu/${id}`, {
             method: "GET"
         })
         const parseRes = await res.json()
         setJeu(parseRes)
-    }
-
-    async function getAffectations() {
-        const res = await fetch(`http://localhost:5000/affectation/jeu/${id}`)
-        const parseRes = await res.json()
-        setAffectations(parseRes)
-        getZones()
+        setShow(true)
     }
 
     useEffect(() => {
         getJeu()
-        getAffectations()
     },[])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -74,47 +62,10 @@ function AddJeu({user, setUser}:UserProps) {
         navigate("/jeux")
     }
 
-    async function removeZone(affectation:number) {
-        const res = await fetch(`http://localhost:5000/affectation/${affectation}`, {
-            method: "DELETE",
-            headers: {token: localStorage.token}
-        })
-        setAffectations(affectations.slice().filter(({affectation_id}) => affectation_id !== affectation))
-    }
-
-    async function getZones() {
-        const res = await fetch("http://localhost:5000/zone")
-        const parseRes = await res.json()
-        setZones(parseRes)
-    }
-
-    useEffect(() => {
-        const newZones = zones.filter(({zone_id,zone_name}) => !affectations.some((zone:{zone_id:number,zone_name:string}) => zone.zone_name === zone_name))
-        if (newZones.length !== 0) {
-            setZone(newZones[0])
-        }
-        else {
-            setZone({zone_id:0,zone_name:""})
-        }
-    },[zones,affectations])
-
-    async function affectZone() {
-        if (zone.zone_id !== 0) {
-            const body = {jeu:id,zone:zone.zone_id}
-            const res = await fetch("http://localhost:5000/affectation", {
-                method: "POST",
-                headers: {"Content-Type" : "application/json",token: localStorage.token},
-                body:JSON.stringify(body)
-            })
-            const parseRes:Affectation = await res.json()
-            const newAffectations:Affectation[] = affectations.slice()
-            newAffectations.push(parseRes)
-            setAffectations(newAffectations)
-        }
-    }
+    const [show, setShow] = useState<boolean>(false)
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -148,7 +99,7 @@ function AddJeu({user, setUser}:UserProps) {
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 CONFIRMER
             </Button>
-          </Box>
+          </Box></Container> }
         </Container>
     )
 }

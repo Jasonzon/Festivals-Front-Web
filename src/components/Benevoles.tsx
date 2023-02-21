@@ -54,9 +54,10 @@ function Benevoles({user, setUser}:UserProps) {
                                 <Typography>{benevole_mail}</Typography>
                             </CardContent>
                             {user.polyuser_role === "admin" &&
-                            <CardActions>
+                            <CardActions style={{display:"grid"}}>
                                 <Button onClick={() => navigate(`/benevoles/modifier/${benevole_id}`)} size="small">MODIFIER</Button>
                                 {del !== index ? <Button size="small" onClick={() => setDel(index)}>SUPPRIMER</Button> : <Button onClick={() => deleteBenevole(benevole_id)} size="small">CONFIRMER</Button>}
+                                <Button onClick={() => navigate(`/benevoles/affecter/${benevole_id}`)} size="small">AFFECTER A UN POSTE</Button>
                             </CardActions> }
                         </Card>
                     </Grid>

@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid"
 import Button from "@mui/material/Button"
 import {useNavigate, useParams} from "react-router-dom"
 import {useState, useEffect} from "react"
+import CircularProgress from "@mui/material/CircularProgress"
 
 function AddCreneau({user, setUser}:UserProps) {
 
@@ -22,6 +23,7 @@ function AddCreneau({user, setUser}:UserProps) {
             })
             const parseRes = await res.json()
             setCreneau({creneau_debut:new Date(parseRes.creneau_debut),creneau_fin:new Date(parseRes.creneau_fin)})
+            setShow(true)
         }
     }
 
@@ -47,10 +49,12 @@ function AddCreneau({user, setUser}:UserProps) {
             })
         }
         navigate("/creneaux")
-      }
+    }
+
+    const [show, setShow] = useState<boolean>(false)
 
     return (
-        <Container component="main" maxWidth="sm">
+        <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -79,7 +83,7 @@ function AddCreneau({user, setUser}:UserProps) {
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 {id === undefined ? "AJOUTER" : "MODIFIER"}
             </Button>
-          </Box>
+          </Box></Container> }
         </Container>
     )
 }

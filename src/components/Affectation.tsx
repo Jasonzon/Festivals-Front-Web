@@ -18,7 +18,6 @@ function Affectation({user, setUser}:UserProps) {
     const [zones, setZones] = useState<{zone_id:number,zone_name:string}[]>([])
     const [zone, setZone] = useState<number>(0)
     const [finalZones, setFinalZones] = useState<{zone_id:number,zone_name:string}[]>([])
-    const [affectations, setAffectations] = useState([])
 
     const navigate = useNavigate()
 
@@ -45,18 +44,17 @@ function Affectation({user, setUser}:UserProps) {
             method: "GET"
         })
         const parseRes = await res.json()
-        setAffectations(parseRes)
+        setFinalZones(zones.filter(({zone_id,zone_name}) => !parseRes.some((zone:{zone_id:number,zone_name:string}) => zone.zone_name === zone_name)))
     }
 
     useEffect(() => {
         getJeu()
         getZones()
-        getZonesByJeu()
     },[])
 
     useEffect(() => {
-        setFinalZones(zones.filter(({zone_id,zone_name}) => !affectations.some((zone:{zone_id:number,zone_name:string}) => zone.zone_name === zone_name)))
-    },[zones,affectations])
+        getZonesByJeu()
+    },[zones])
 
     useEffect(() => {
         if (finalZones.length !== 0) {
@@ -65,7 +63,7 @@ function Affectation({user, setUser}:UserProps) {
         else {
             setZone(0)
         }
-        setShow(true)
+        setTimeout(() => setShow(true),500)
     },[finalZones])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

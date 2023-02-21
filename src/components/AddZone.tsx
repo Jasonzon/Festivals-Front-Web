@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid"
 import Button from "@mui/material/Button"
 import {useNavigate, useParams} from "react-router-dom"
 import {useState, useEffect} from "react"
+import CircularProgress from "@mui/material/CircularProgress"
 
 function AddZone({user, setUser}:UserProps) {
 
@@ -22,6 +23,7 @@ function AddZone({user, setUser}:UserProps) {
             })
             const parseRes = await res.json()
             setZone(parseRes)
+            setShow(true)
         }
     }
 
@@ -47,10 +49,12 @@ function AddZone({user, setUser}:UserProps) {
             })
         }
         navigate("/zones")
-      }
+    }
+
+    const [show, setShow] = useState<boolean>(false)
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -68,7 +72,7 @@ function AddZone({user, setUser}:UserProps) {
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 {id === undefined ? "AJOUTER" : "MODIFIER"}
             </Button>
-          </Box>
+          </Box></Container> }
         </Container>
     )
 }

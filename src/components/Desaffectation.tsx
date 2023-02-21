@@ -65,7 +65,7 @@ function Desaffectation({user, setUser}:UserProps) {
         else {
             setZone(0)
         }
-        setShow(true)
+        setTimeout(() => setShow(true),500)
     },[finalZones])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
