@@ -8,6 +8,7 @@ import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
 import CardActions from "@mui/material/CardActions"
+import CircularProgress from '@mui/material/CircularProgress'
 
 function Benevoles({user, setUser}:UserProps) {
 
@@ -23,6 +24,7 @@ function Benevoles({user, setUser}:UserProps) {
         })
         const parseRes = await res.json()
         setBenevoles(parseRes)
+        setShow(true)
     }
 
     useEffect(() => {
@@ -37,8 +39,10 @@ function Benevoles({user, setUser}:UserProps) {
         })
     }
 
+    const [show, setShow] = useState<boolean>(false)
+
     return (
-        <Container>
+        <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
             <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">Benevoles</Typography>
             {user.polyuser_role === "admin" && <Button style={{marginBottom:"1rem"}} onClick={() => navigate("/benevoles/ajouter")} variant="contained">AJOUTER</Button>}
             <Grid container spacing={4}>
@@ -57,7 +61,7 @@ function Benevoles({user, setUser}:UserProps) {
                         </Card>
                     </Grid>
                 )}
-            </Grid>
+            </Grid></Container> }
         </Container>
     )
 }

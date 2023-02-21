@@ -8,6 +8,7 @@ import {Link, useNavigate} from "react-router-dom"
 import {UserProps} from "./App"
 import Button from "@mui/material/Button"
 import CardActions from "@mui/material/CardActions"
+import CircularProgress from "@mui/material/CircularProgress"
 
 function Zones({user, setUser}:UserProps) {
 
@@ -25,6 +26,7 @@ function Zones({user, setUser}:UserProps) {
         const res = await fetch("http://localhost:5000/zone")
         const parseRes = await res.json()
         setZones(parseRes)
+        setShow(true)
     }
 
     async function deleteZone(id: number) {
@@ -35,7 +37,10 @@ function Zones({user, setUser}:UserProps) {
         })
     }
 
+    const [show, setShow] = useState<boolean>(false)
+
     return (
+    <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> :
         <Container sx={{ py: 8 }} maxWidth="md">
             <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">Zones</Typography>
             {user.polyuser_role === "admin" && <Button onClick={() => navigate("/zones/ajouter")} variant="contained" style={{marginBottom:"1rem"}}>AJOUTER</Button>}
@@ -56,7 +61,7 @@ function Zones({user, setUser}:UserProps) {
                     </Link>
                 </Grid>
                 ))}
-            </Grid>
+            </Grid></Container> }
         </Container>
     )
 }

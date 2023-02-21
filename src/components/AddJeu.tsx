@@ -12,6 +12,14 @@ import MenuItem from "@mui/material/MenuItem"
 import InputLabel from "@mui/material/InputLabel"
 import { Typography } from "@mui/material"
 
+interface Affectation {
+    affectation_id:number,
+    affectation_jeu:number,
+    affectation_zone:number,
+    zone_id:number,
+    zone_name:string
+}
+
 function AddJeu({user, setUser}:UserProps) {
 
     const navigate = useNavigate()
@@ -20,9 +28,9 @@ function AddJeu({user, setUser}:UserProps) {
 
     const [jeu, setJeu] = useState({jeu_id:0,jeu_name:"",jeu_type:"enfant"})
 
-    const [affectations, setAffectations] = useState([])
+    const [affectations, setAffectations] = useState<Affectation[]>([])
 
-    const [zones, setZones] = useState([])
+    const [zones, setZones] = useState<{zone_id:number,zone_name:string}[]>([])
 
     const [zone, setZone] = useState({zone_id:0,zone_name:""})
 
@@ -71,7 +79,6 @@ function AddJeu({user, setUser}:UserProps) {
             method: "DELETE",
             headers: {token: localStorage.token}
         })
-        const parseRes = await res.json()
         setAffectations(affectations.slice().filter(({affectation_id}) => affectation_id !== affectation))
     }
 
@@ -82,10 +89,29 @@ function AddJeu({user, setUser}:UserProps) {
     }
 
     useEffect(() => {
-        if (zones.length !== 0) {
-            setZone(zones[0])
+        const newZones = zones.filter(({zone_id,zone_name}) => !affectations.some((zone:{zone_id:number,zone_name:string}) => zone.zone_name === zone_name))
+        if (newZones.length !== 0) {
+            setZone(newZones[0])
         }
-    },[zones])
+        else {
+            setZone({zone_id:0,zone_name:""})
+        }
+    },[zones,affectations])
+
+    async function affectZone() {
+        if (zone.zone_id !== 0) {
+            const body = {jeu:id,zone:zone.zone_id}
+            const res = await fetch("http://localhost:5000/affectation", {
+                method: "POST",
+                headers: {"Content-Type" : "application/json",token: localStorage.token},
+                body:JSON.stringify(body)
+            })
+            const parseRes:Affectation = await res.json()
+            const newAffectations:Affectation[] = affectations.slice()
+            newAffectations.push(parseRes)
+            setAffectations(newAffectations)
+        }
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -104,7 +130,7 @@ function AddJeu({user, setUser}:UserProps) {
               </Grid>
               <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <InputLabel id="demo-simple-select-label">Type</InputLabel>
                     <Select
                         value={jeu.jeu_type}
                         label="Type"
@@ -118,29 +144,6 @@ function AddJeu({user, setUser}:UserProps) {
                     </Select>
                 </FormControl>
               </Grid>
-              <Typography variant="h4" component="h4">Zones</Typography>
-              <Grid item xs={12}>
-                {affectations.map(({zone_id,zone_name,affectation_id}) => 
-                    <Box display="flex" alignItems="center">
-                        <Typography>{zone_name}</Typography>
-                        <Button onClick={() => removeZone(affectation_id)}>ENLEVER</Button>
-                    </Box>
-                )}
-                </Grid>
-                <Grid item xs={12}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Zone</InputLabel>
-                        <Select
-                            value={zone.zone_name}
-                            label="Zone"
-                            onChange={(e) => setZone({...zone,zone_name:e.target.value})}
-                        >
-                            {zones.filter(({zone_name}) => !affectations.some((zone:{zone_name:string}) => zone.zone_name === zone_name)).map(({zone_id,zone_name}) => 
-                                <MenuItem value={zone_name}>{zone_name}</MenuItem>
-                            )}
-                        </Select>
-                    </FormControl>
-                </Grid>
             </Grid>
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 CONFIRMER

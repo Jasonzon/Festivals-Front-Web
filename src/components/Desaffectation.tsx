@@ -12,13 +12,13 @@ import MenuItem from "@mui/material/MenuItem"
 import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
 
-function Affectation({user, setUser}:UserProps) {
+function Desaffectation({user, setUser}:UserProps) {
 
     const [jeu, setJeu] = useState({jeu_id:0,jeu_name:"",jeu_type:""})
     const [zones, setZones] = useState<{zone_id:number,zone_name:string}[]>([])
     const [zone, setZone] = useState<number>(0)
     const [finalZones, setFinalZones] = useState<{zone_id:number,zone_name:string}[]>([])
-    const [affectations, setAffectations] = useState([])
+    const [affectations, setAffectations] = useState<{zone_id:number,affectation_id:number,zone_name:string}[]>([])
 
     const navigate = useNavigate()
 
@@ -55,7 +55,7 @@ function Affectation({user, setUser}:UserProps) {
     },[])
 
     useEffect(() => {
-        setFinalZones(zones.filter(({zone_id,zone_name}) => !affectations.some((zone:{zone_id:number,zone_name:string}) => zone.zone_name === zone_name)))
+        setFinalZones(zones.filter(({zone_id,zone_name}) => affectations.some((zone:{zone_id:number,zone_name:string}) => zone.zone_name === zone_name)))
     },[zones,affectations])
 
     useEffect(() => {
@@ -70,11 +70,10 @@ function Affectation({user, setUser}:UserProps) {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const body = {jeu:id,zone:zone}
-        const res = await fetch("http://localhost:5000/affectation", {
-            method: "POST",
-            headers: {"Content-Type" : "application/json",token: localStorage.token},
-            body:JSON.stringify(body)
+        const aff = affectations.find((aff:{zone_id:number}) => aff.zone_id === zone)!.affectation_id
+        const res = await fetch(`http://localhost:5000/affectation/${aff}`, {
+            method: "DELETE",
+            headers: {token: localStorage.token}
         })
         navigate("/jeux")
     }
@@ -82,7 +81,7 @@ function Affectation({user, setUser}:UserProps) {
     const [show, setShow] = useState<boolean>(false)
 
     return (
-    <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> :
+    <Container>{!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> :
         <Container component="main" maxWidth="xs">
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -91,10 +90,10 @@ function Affectation({user, setUser}:UserProps) {
               </Grid>
               <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="select1">Zone</InputLabel>
+                <InputLabel id="select2">Zone</InputLabel>
                 <Select
-                    labelId="zone1"
-                    id="zone1"
+                    labelId="zone2"
+                    id="zone2"
                     value={zone}
                     label="Zone"
                     onChange={(e) => setZone(Number(e.target.value))}
@@ -108,11 +107,11 @@ function Affectation({user, setUser}:UserProps) {
               </Grid>
             </Grid>
             <Button disabled={zone === 0} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                AFFECTER
+                DESAFFECTER
             </Button>
           </Box></Container> }
         </Container>
     )
 }
 
-export default Affectation
+export default Desaffectation

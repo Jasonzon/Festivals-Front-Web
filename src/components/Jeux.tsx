@@ -15,6 +15,7 @@ import Button from "@mui/material/Button"
 import {UserProps} from "./App"
 import {useNavigate} from "react-router-dom"
 import CardActions from "@mui/material/CardActions"
+import CircularProgress from '@mui/material/CircularProgress'
 
 interface TypeJeu {
   enfant: boolean,
@@ -43,6 +44,7 @@ function Jeux({user, setUser}:UserProps) {
       const res = await fetch("http://localhost:5000/jeu")
       const parseRes = await res.json()
       setJeux(parseRes)
+      setShow(true)
   }
 
   async function deleteJeu(id: number) {
@@ -53,7 +55,10 @@ function Jeux({user, setUser}:UserProps) {
     })
   }
 
+  const [show, setShow] = useState<boolean>(false)
+
   return (
+    <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> :
       <Container sx={{ py: 8 }} maxWidth="md">
         <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">Jeux</Typography>
         {user.polyuser_role === "admin" && <Button onClick={() => navigate("/jeux/ajouter")} variant="contained" style={{marginBottom:"1rem"}}>AJOUTER</Button>}
@@ -100,14 +105,16 @@ function Jeux({user, setUser}:UserProps) {
                   )}
                 </CardContent>
                 {user.polyuser_role === "admin" &&
-                  <CardActions>
+                  <CardActions style={{display:"grid"}}>
                       <Button onClick={() => navigate(`/jeux/modifier/${jeu_id}`)} size="small">MODIFIER</Button>
                       {del !== index ? <Button size="small" onClick={() => setDel(index)}>SUPPRIMER</Button> : <Button onClick={() => deleteJeu(jeu_id)} size="small">CONFIRMER</Button>}
+                      <Button onClick={() => navigate(`/jeux/affecter/${jeu_id}`)} size="small">AFFECTER A UNE ZONE</Button>
+                      <Button onClick={() => navigate(`/jeux/desaffecter/${jeu_id}`)} size="small">DESAFFECTER D'UNE ZONE</Button>
                   </CardActions> }
               </Card>
             </Grid>
           ))}
-        </Grid>
+        </Grid></Container> }
       </Container>
   )
 }
