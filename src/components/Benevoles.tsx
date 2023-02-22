@@ -9,6 +9,8 @@ import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
 import CardActions from "@mui/material/CardActions"
 import CircularProgress from '@mui/material/CircularProgress'
+import Box from "@mui/material/Box"
+import TextField from "@mui/material/TextField"
 
 function Benevoles({user, setUser}:UserProps) {
 
@@ -16,7 +18,9 @@ function Benevoles({user, setUser}:UserProps) {
 
     const [del, setDel] = useState(-1)
 
-    const [benevoles, setBenevoles] = useState([])
+    const [benevoles, setBenevoles] = useState<{benevole_nom:string,benevole_prenom:string,benevole_id:number,benevole_mail:string}[]>([])
+
+    const [searchName, setSearchName] = useState<string>("")
 
     async function getBenevoles() {
         const res = await fetch("http://localhost:5000/benevole", {
@@ -43,10 +47,13 @@ function Benevoles({user, setUser}:UserProps) {
 
     return (
         <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
-            <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">Benevoles</Typography>
-            {user.polyuser_role === "admin" && <Button style={{marginBottom:"1rem"}} onClick={() => navigate("/benevoles/ajouter")} variant="contained">AJOUTER</Button>}
+            <Box style={{marginBottom:"1rem"}}>
+                <Typography variant="h2" component="h2">Benevoles</Typography>
+                {user.polyuser_role === "admin" && <Button onClick={() => navigate("/benevoles/ajouter")} variant="contained">AJOUTER</Button>}
+                <TextField style={{marginLeft:"1rem"}} label="Recherche par nom" variant="outlined" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+            </Box>
             <Grid container spacing={4}>
-                {benevoles.map(({benevole_nom,benevole_prenom,benevole_id,benevole_mail},index) =>
+                {benevoles.filter(({benevole_nom,benevole_prenom,benevole_id,benevole_mail}) => benevole_nom.toLowerCase().includes(searchName.toLowerCase()) || benevole_prenom.toLowerCase().includes(searchName.toLowerCase()) || benevole_mail.toLowerCase().includes(searchName.toLowerCase())).map(({benevole_nom,benevole_prenom,benevole_id,benevole_mail},index) =>
                     <Grid item key={benevole_id} xs={12} sm={6} md={4}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                             <CardContent sx={{ flexGrow: 1 }}>
@@ -58,6 +65,7 @@ function Benevoles({user, setUser}:UserProps) {
                                 <Button onClick={() => navigate(`/benevoles/modifier/${benevole_id}`)} size="small">MODIFIER</Button>
                                 {del !== index ? <Button size="small" onClick={() => setDel(index)}>SUPPRIMER</Button> : <Button onClick={() => deleteBenevole(benevole_id)} size="small">CONFIRMER</Button>}
                                 <Button onClick={() => navigate(`/benevoles/affecter/${benevole_id}`)} size="small">AFFECTER A UN POSTE</Button>
+                                <Button onClick={() => navigate(`/benevoles/desaffecter/${benevole_id}`)} size="small">DESAFFECTER D'UN POSTE</Button>
                             </CardActions> }
                         </Card>
                     </Grid>

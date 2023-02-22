@@ -4,14 +4,15 @@ import Grid from "@mui/material/Grid"
 import Container from "@mui/material/Container"
 import CreneauBenevoles from "./CreneauBenevoles"
 import Typography from "@mui/material/Typography"
+import CircularProgress from "@mui/material/CircularProgress"
 
 function Zone() {
 
     const {id} = useParams()
 
     useEffect(() => {
-        getCreneaux()
         getZone()
+        getCreneaux()
     },[])
 
     const [creneaux, setCreneaux] = useState([])
@@ -27,10 +28,13 @@ function Zone() {
         const res = await fetch(`http://localhost:5000/creneau/zone/${id}`)
         const parseRes = await res.json()
         setCreneaux(parseRes)
+        setTimeout(() => setShow(true),500)
     }
 
+    const [show, setShow] = useState<boolean>(false)
+
     return (
-        <Container sx={{ py: 8 }} maxWidth="md">
+        <Container sx={{ py: 8 }} maxWidth="md"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
             <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">{zone.zone_name}</Typography>
             <Grid container spacing={4}>
                 {creneaux.map(({creneau_id,creneau_debut,creneau_fin}) => (
@@ -41,7 +45,7 @@ function Zone() {
                 {creneaux.length === 0 && zone.zone_id !== null &&
                     <Typography style={{marginTop:"2rem",marginLeft:"4rem"}} variant="h3" component="h3">Pas de bénévoles</Typography>
                 }
-            </Grid>
+            </Grid></Container> }
         </Container>
     )
 }

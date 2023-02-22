@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem"
 import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
 
-function Travail({user, setUser}:UserProps) {
+function Detravail({user, setUser}:UserProps) {
 
     const {id} = useParams()
 
@@ -29,30 +29,14 @@ function Travail({user, setUser}:UserProps) {
 
     const [creneau, setCreneau] = useState<number>(0)
 
-    const [zones, setZones] = useState<{zone_id:number,zone_name:string}[]>([])
+    const [travaux, setTravaux] = useState<{travail_id:number,travail_benevole:number,travail_zone:number,travail_creneau:number,creneau_debut:Date,creneau_fin:Date,zone_name:string}[]>([])
 
-    const [creneaux, setCreneaux] = useState<{creneau_id:number,creneau_debut:Date,creneau_fin:Date}[]>([])
-
-    const [travaux, setTravaux] = useState<{travail_id:number,travail_benevole:number,travail_zone:number,travail_creneau:number}[]>([])
-
-    const [finalCreneaux, setFinalCreneaux] = useState<{creneau_id:number,creneau_debut:Date,creneau_fin:Date}[]>([])
+    const [finalTravaux, setFinalTravaux] = useState<{travail_id:number,travail_benevole:number,travail_zone:number,travail_creneau:number,creneau_debut:Date,creneau_fin:Date,zone_name:string}[]>([])
 
     async function getBenevole() {
         const res = await fetch(`http://localhost:5000/benevole/${id}`)
         const parseRes = await res.json()
         setBenevole(parseRes)
-    }
-
-    async function getCreneaux() {
-        const res = await fetch("http://localhost:5000/creneau")
-        const parseRes = await res.json()
-        setCreneaux(parseRes)
-    }
-
-    async function getZones() {
-        const res = await fetch("http://localhost:5000/zone")
-        const parseRes = await res.json()
-        setZones(parseRes)
     }
 
     async function getTravaux() {
@@ -63,41 +47,35 @@ function Travail({user, setUser}:UserProps) {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const body = {benevole:id,zone,creneau}
-        const res = await fetch("http://localhost:5000/travail", {
-            method: "POST",
-            headers: {"Content-Type" : "application/json",token: localStorage.token},
-            body:JSON.stringify(body)
+        const tra = travaux.find((tr:{travail_zone:number,travail_creneau:number}) => tr.travail_zone === zone && tr.travail_creneau === creneau)!.travail_id
+        const res = await fetch(`http://localhost:5000/travail/${tra}`, {
+            method: "DELETE",
+            headers: {token: localStorage.token}
         })
         navigate("/benevoles")
     }
 
     useEffect(() => {
         getBenevole()
-        getZones()
-        getCreneaux()
         getTravaux()
     },[])
 
     useEffect(() => {
-        setFinalCreneaux(creneaux.filter(({creneau_id}) => !travaux.some((travail:{travail_creneau:number}) => travail.travail_creneau === creneau_id)))
-    },[travaux,creneaux])
-
-    useEffect(() => {
-        if (finalCreneaux.length !== 0) {
-            setCreneau(finalCreneaux[0].creneau_id)
-        }
-        else {
-            setCreneau(0)
-        }
-    },[finalCreneaux])
-
-    useEffect(() => {
-        if (zones.length !== 0) {
-            setZone(zones[0].zone_id)
+        if (travaux.length !== 0) {
+            setCreneau(travaux[0].travail_creneau)
         }
         setTimeout(() => setShow(true),500)
-    },[zones])
+    },[travaux])
+
+    useEffect(() => {
+        setFinalTravaux(travaux.filter(({travail_creneau}) => travail_creneau === creneau))
+    },[creneau,travaux])
+
+    useEffect(() => {
+        if (finalTravaux.length !== 0) {
+            setZone(finalTravaux[0].travail_zone)
+        }
+    },[finalTravaux])
 
     const [show, setShow] = useState<boolean>(false)
 
@@ -119,8 +97,8 @@ function Travail({user, setUser}:UserProps) {
                         label="Créneau"
                         onChange={(e) => setCreneau(Number(e.target.value))}
                     >
-                        {finalCreneaux.map(({creneau_id,creneau_debut,creneau_fin}) => 
-                            <MenuItem key={creneau_id} value={creneau_id}>{creneau_debut.toString().slice(11,16) + " - " + creneau_fin.toString().slice(11,16)}</MenuItem>
+                        {travaux.map(({travail_id,travail_zone,travail_creneau,creneau_debut,creneau_fin}) => 
+                            <MenuItem key={travail_creneau} value={travail_creneau}>{creneau_debut.toString().slice(11,16) + " - " + creneau_fin.toString().slice(11,16)}</MenuItem>
                         )}
                         {creneau === 0 && <MenuItem value={0}>Pas de créneaux</MenuItem>}
                     </Select>
@@ -136,8 +114,8 @@ function Travail({user, setUser}:UserProps) {
                         label="Zone"
                         onChange={(e) => setZone(Number(e.target.value))}
                     >
-                        {zones.map(({zone_id,zone_name}) => 
-                            <MenuItem key={zone_id} value={zone_id}>{zone_name}</MenuItem>
+                        {finalTravaux.map(({travail_zone,zone_name}) => 
+                            <MenuItem key={travail_zone} value={travail_zone}>{zone_name}</MenuItem>
                         )}
                         {zone === 0 && <MenuItem value={0}>Pas de zones</MenuItem>}
                     </Select>
@@ -145,11 +123,11 @@ function Travail({user, setUser}:UserProps) {
                   </Grid>
                 </Grid>
                 <Button disabled={creneau === 0} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                    AFFECTER
+                    DESAFFECTER
                 </Button>
               </Box></Container> }
             </Container>
         )
 }
 
-export default Travail
+export default Detravail

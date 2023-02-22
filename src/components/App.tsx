@@ -20,6 +20,7 @@ import AddZone from "./AddZone"
 import Affectation from "./Affectation"
 import Desaffectation from "./Desaffectation"
 import Travail from "./Travail"
+import Detravail from "./Detravail"
 
 const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"],["Profil","/connect"]]
 
@@ -75,6 +76,7 @@ function App() {
           <Route path="/benevoles/ajouter" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <AddBenevole user={user} setUser={setUser} />} />
           <Route path="/benevoles/modifier/:id" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <AddBenevole user={user} setUser={setUser} />} />
           <Route path="/benevoles/affecter/:id" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <Travail user={user} setUser={setUser} />} />
+          <Route path="/benevoles/desaffecter/:id" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <Detravail user={user} setUser={setUser} />} />
           <Route path="/jeux" element={<Jeux user={user} setUser={setUser} />} />
           <Route path="/jeux/ajouter" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
           <Route path="/jeux/modifier/:id" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
