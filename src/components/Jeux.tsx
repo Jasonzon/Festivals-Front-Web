@@ -25,7 +25,7 @@ interface TypeJeu {
   expert: boolean
 }
 
-function Jeux({user, setUser}:UserProps) {
+function Jeux({user, setUser, setOpen}:UserProps) {
 
   const [del, setDel] = useState(-1)
 
@@ -53,6 +53,10 @@ function Jeux({user, setUser}:UserProps) {
         method: "DELETE",
         headers: {token: localStorage.token}
     })
+    if (res.status === 401) {
+      setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+      setOpen(true)
+    }
   }
 
   const [show, setShow] = useState<boolean>(false)

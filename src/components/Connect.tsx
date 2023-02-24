@@ -10,7 +10,7 @@ import {UserProps} from "./App"
 import {useNavigate} from "react-router-dom"
 import {useEffect} from "react"
 
-function Connect({user, setUser}:UserProps) {
+function Connect({user, setUser, setOpen}:UserProps) {
 
   const navigate = useNavigate()
 

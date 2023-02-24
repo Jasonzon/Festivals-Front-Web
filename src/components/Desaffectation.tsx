@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem"
 import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
 
-function Desaffectation({user, setUser}:UserProps) {
+function Desaffectation({user, setUser, setOpen}:UserProps) {
 
     const [jeu, setJeu] = useState({jeu_id:0,jeu_name:"",jeu_type:""})
     const [zones, setZones] = useState<{zone_id:number,zone_name:string}[]>([])
@@ -75,6 +75,10 @@ function Desaffectation({user, setUser}:UserProps) {
             method: "DELETE",
             headers: {token: localStorage.token}
         })
+        if (res.status === 401) {
+            setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+            setOpen(true)
+        }
         navigate("/jeux")
     }
 

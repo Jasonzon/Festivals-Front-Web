@@ -13,15 +13,7 @@ import InputLabel from "@mui/material/InputLabel"
 import { Typography } from "@mui/material"
 import CircularProgress from "@mui/material/CircularProgress"
 
-interface Affectation {
-    affectation_id:number,
-    affectation_jeu:number,
-    affectation_zone:number,
-    zone_id:number,
-    zone_name:string
-}
-
-function AddJeu({user, setUser}:UserProps) {
+function AddJeu({user, setUser, setOpen}:UserProps) {
 
     const navigate = useNavigate()
 
@@ -59,6 +51,10 @@ function AddJeu({user, setUser}:UserProps) {
                 headers: {"Content-Type" : "application/json",token: localStorage.token},
                 body:JSON.stringify(body)
             })
+            if (res.status === 401) {
+                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                setOpen(true)
+              }
         }
         else {
             const res = await fetch(`http://localhost:5000/jeu/${id}`, {
@@ -66,6 +62,10 @@ function AddJeu({user, setUser}:UserProps) {
                 headers: {"Content-Type" : "application/json",token: localStorage.token},
                 body:JSON.stringify(body)
             })
+            if (res.status === 401) {
+                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                setOpen(true)
+              }
         }
         navigate("/jeux")
     }

@@ -8,7 +8,7 @@ import {UserProps} from "./App"
 import {Link, useNavigate} from "react-router-dom"
 import {useEffect} from "react"
 
-function Register({user, setUser}:UserProps) {
+function Register({user, setUser, setOpen}:UserProps) {
 
   const navigate = useNavigate()
 

@@ -12,7 +12,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 
-function Benevoles({user, setUser}:UserProps) {
+function Benevoles({user, setUser, setOpen}:UserProps) {
 
     const navigate = useNavigate()
 
@@ -41,6 +41,10 @@ function Benevoles({user, setUser}:UserProps) {
             method: "DELETE",
             headers: {token: localStorage.token}
         })
+        if (res.status === 401) {
+            setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+            setOpen(true)
+        }
     }
 
     const [show, setShow] = useState<boolean>(false)

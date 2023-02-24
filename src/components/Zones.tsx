@@ -12,7 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress"
 import TextField from "@mui/material/TextField"
 import Box from "@mui/material/Box"
 
-function Zones({user, setUser}:UserProps) {
+function Zones({user, setUser, setOpen}:UserProps) {
 
     const [del, setDel] = useState(-1)
 
@@ -51,6 +51,10 @@ function Zones({user, setUser}:UserProps) {
             method: "DELETE",
             headers: {token: localStorage.token}
         })
+        if (res.status === 401) {
+            setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+            setOpen(true)
+        }
     }
 
     const [show, setShow] = useState<boolean>(false)

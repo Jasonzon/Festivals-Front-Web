@@ -9,7 +9,7 @@ import {useState, useEffect} from "react"
 import CircularProgress from "@mui/material/CircularProgress"
 import Typography from "@mui/material/Typography"
 
-function AddCreneau({user, setUser}:UserProps) {
+function AddCreneau({user, setUser, setOpen}:UserProps) {
 
     const navigate = useNavigate()
 
@@ -49,6 +49,10 @@ function AddCreneau({user, setUser}:UserProps) {
                 headers: {"Content-Type" : "application/json",token: localStorage.token},
                 body:JSON.stringify(body)
             })
+            if (res.status === 401) {
+                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                setOpen(true)
+              }
         }
         else {
             const res = await fetch(`http://localhost:5000/creneau/${id}`, {
@@ -56,6 +60,10 @@ function AddCreneau({user, setUser}:UserProps) {
                 headers: {"Content-Type" : "application/json",token: localStorage.token},
                 body:JSON.stringify(body)
             })
+            if (res.status === 401) {
+                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                setOpen(true)
+              }
         }
         navigate("/creneaux")
     }

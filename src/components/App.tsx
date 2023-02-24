@@ -1,5 +1,5 @@
 import "../style/App.css"
-import { BrowserRouter as Router, Route, Routes, Link} from "react-router-dom"
+import { BrowserRouter as Router, Route, Routes, useNavigate} from "react-router-dom"
 import Home from "./Home"
 import Benevoles from "./Benevoles"
 import Jeux from "./Jeux"
@@ -9,7 +9,7 @@ import Zones from "./Zones"
 import Creneaux from "./Creneaux"
 import Zone from "./Zone"
 import Creneau from "./Creneau"
-import {useEffect, useState} from "react"
+import {useEffect, useState, Fragment} from "react"
 import Register from "./Register"
 import Connect from "./Connect"
 import Profil from "./Profil"
@@ -21,6 +21,10 @@ import Affectation from "./Affectation"
 import Desaffectation from "./Desaffectation"
 import Travail from "./Travail"
 import Detravail from "./Detravail"
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Button from "@mui/material/Button"
 
 const pages = [["Jeux","/jeux"],["Bénévoles","/benevoles"],["Zones","/zones"],["Créneaux","/creneaux"],["Profil","/connect"]]
 
@@ -35,9 +39,37 @@ interface User {
 export interface UserProps {
   user: User,
   setUser: React.Dispatch<React.SetStateAction<User>>
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function App() {
+
+  const navigate = useNavigate()
+
+  const [open, setOpen] = useState<boolean>(false)
+
+  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const action = (
+    <Fragment>
+      <Button color="secondary" size="small" onClick={() => {setOpen(false);navigate("/connect")}}>
+        RECONNEXION
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </Fragment>
+  );
 
   const [user, setUser] = useState<User>({
     polyuser_id:0,
@@ -70,29 +102,36 @@ function App() {
       <Router>
         <CssBaseline />
         <Header pages={pages} />
+        <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          message="Vous êtes déconnecté"
+          action={action}
+        />
         <Routes>
           <Route path="/" element={<Home/>} />
-          <Route path="/benevoles" element={<Benevoles user={user} setUser={setUser} />} />
-          <Route path="/benevoles/ajouter" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <AddBenevole user={user} setUser={setUser} />} />
-          <Route path="/benevoles/modifier/:id" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <AddBenevole user={user} setUser={setUser} />} />
-          <Route path="/benevoles/affecter/:id" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <Travail user={user} setUser={setUser} />} />
-          <Route path="/benevoles/desaffecter/:id" element={user.polyuser_id === 0 ? <Benevoles user={user} setUser={setUser} /> : <Detravail user={user} setUser={setUser} />} />
-          <Route path="/jeux" element={<Jeux user={user} setUser={setUser} />} />
-          <Route path="/jeux/ajouter" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
-          <Route path="/jeux/modifier/:id" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <AddJeu user={user} setUser={setUser} />} />
-          <Route path="/jeux/affecter/:id" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <Affectation user={user} setUser={setUser} />} />
-          <Route path="/jeux/desaffecter/:id" element={user.polyuser_id === 0 ? <Jeux user={user} setUser={setUser} /> : <Desaffectation user={user} setUser={setUser} />} />
-          <Route path="/zones" element={<Zones user={user} setUser={setUser} />} />
-          <Route path="/zones/ajouter" element={user.polyuser_id === 0 ? <Zones user={user} setUser={setUser} /> : <AddZone user={user} setUser={setUser} />} />
-          <Route path="/zones/modifier/:id" element={user.polyuser_id === 0 ? <Zones user={user} setUser={setUser} /> : <AddZone user={user} setUser={setUser} />} />
+          <Route path="/benevoles" element={<Benevoles setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/benevoles/ajouter" element={user.polyuser_id === 0 ? <Benevoles setOpen={setOpen} user={user} setUser={setUser} /> : <AddBenevole setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/benevoles/modifier/:id" element={user.polyuser_id === 0 ? <Benevoles setOpen={setOpen} user={user} setUser={setUser} /> : <AddBenevole setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/benevoles/affecter/:id" element={user.polyuser_id === 0 ? <Benevoles setOpen={setOpen} user={user} setUser={setUser} /> : <Travail setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/benevoles/desaffecter/:id" element={user.polyuser_id === 0 ? <Benevoles setOpen={setOpen} user={user} setUser={setUser} /> : <Detravail setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/jeux" element={<Jeux setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/jeux/ajouter" element={user.polyuser_id === 0 ? <Jeux setOpen={setOpen} user={user} setUser={setUser} /> : <AddJeu setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/jeux/modifier/:id" element={user.polyuser_id === 0 ? <Jeux setOpen={setOpen} user={user} setUser={setUser} /> : <AddJeu setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/jeux/affecter/:id" element={user.polyuser_id === 0 ? <Jeux setOpen={setOpen} user={user} setUser={setUser} /> : <Affectation setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/jeux/desaffecter/:id" element={user.polyuser_id === 0 ? <Jeux setOpen={setOpen} user={user} setUser={setUser} /> : <Desaffectation setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/zones" element={<Zones setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/zones/ajouter" element={user.polyuser_id === 0 ? <Zones setOpen={setOpen} user={user} setUser={setUser} /> : <AddZone setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/zones/modifier/:id" element={user.polyuser_id === 0 ? <Zones setOpen={setOpen} user={user} setUser={setUser} /> : <AddZone setOpen={setOpen} user={user} setUser={setUser} />} />
           <Route path="/zones/:id" element={<Zone/>}></Route>
-          <Route path="/creneaux" element={<Creneaux user={user} setUser={setUser} />} />
-          <Route path="/creneaux/ajouter" element={user.polyuser_id === 0 ? <Creneaux user={user} setUser={setUser} /> : <AddCreneau user={user} setUser={setUser} />} />
-          <Route path="/creneaux/modifier/:id" element={user.polyuser_id === 0 ? <Creneaux user={user} setUser={setUser} /> : <AddCreneau user={user} setUser={setUser} />} />
+          <Route path="/creneaux" element={<Creneaux setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/creneaux/ajouter" element={user.polyuser_id === 0 ? <Creneaux setOpen={setOpen} user={user} setUser={setUser} /> : <AddCreneau setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/creneaux/modifier/:id" element={user.polyuser_id === 0 ? <Creneaux setOpen={setOpen} user={user} setUser={setUser} /> : <AddCreneau setOpen={setOpen} user={user} setUser={setUser} />} />
           <Route path="/creneaux/:id" element={<Creneau/>} />
-          <Route path="/register" element={<Register user={user} setUser={setUser} />} />
-          <Route path="/connect" element={<Connect user={user} setUser={setUser} />} />
-          <Route path="/profil" element={<Profil user={user} setUser={setUser} />} />
+          <Route path="/register" element={<Register setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/connect" element={<Connect setOpen={setOpen} user={user} setUser={setUser} />} />
+          <Route path="/profil" element={<Profil setOpen={setOpen} user={user} setUser={setUser} />} />
           <Route path="*" element={<Home/>} />
         </Routes>
       </Router>

@@ -6,7 +6,7 @@ import Button from "@mui/material/Button"
 import {useNavigate} from "react-router-dom"
 import {useEffect} from "react"
 
-function Profil({user, setUser}:UserProps) {
+function Profil({user, setUser, setOpen}:UserProps) {
 
   const navigate = useNavigate()
 
@@ -19,6 +19,7 @@ function Profil({user, setUser}:UserProps) {
       polyuser_mail:"",
       polyuser_role:""
     })
+    setOpen(true)
   }
 
   useEffect(() => {

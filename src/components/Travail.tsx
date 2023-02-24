@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem"
 import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
 
-function Travail({user, setUser}:UserProps) {
+function Travail({user, setUser, setOpen}:UserProps) {
 
     const {id} = useParams()
 
@@ -69,6 +69,10 @@ function Travail({user, setUser}:UserProps) {
             headers: {"Content-Type" : "application/json",token: localStorage.token},
             body:JSON.stringify(body)
         })
+        if (res.status === 401) {
+            setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+            setOpen(true)
+        }
         navigate("/benevoles")
     }
 

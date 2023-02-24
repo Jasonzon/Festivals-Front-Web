@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem"
 import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
 
-function Affectation({user, setUser}:UserProps) {
+function Affectation({user, setUser, setOpen}:UserProps) {
 
     const [jeu, setJeu] = useState({jeu_id:0,jeu_name:"",jeu_type:""})
     const [zones, setZones] = useState<{zone_id:number,zone_name:string}[]>([])
@@ -74,6 +74,10 @@ function Affectation({user, setUser}:UserProps) {
             headers: {"Content-Type" : "application/json",token: localStorage.token},
             body:JSON.stringify(body)
         })
+        if (res.status === 401) {
+            setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+            setOpen(true)
+        }
         navigate("/jeux")
     }
 
