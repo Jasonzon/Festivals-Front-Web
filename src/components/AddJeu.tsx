@@ -29,17 +29,25 @@ function AddJeu({user, setUser}:UserProps) {
 
     const [jeu, setJeu] = useState({jeu_id:0,jeu_name:"",jeu_type:"enfant"})
 
+    const [initial, setInitial] = useState({jeu_id:0,jeu_name:"",jeu_type:"enfant"})
+
     async function getJeu() {
         const res = await fetch(`http://localhost:5000/jeu/${id}`, {
             method: "GET"
         })
         const parseRes = await res.json()
         setJeu(parseRes)
+        setInitial(parseRes)
         setShow(true)
     }
 
     useEffect(() => {
-        getJeu()
+        if (id !== undefined) {
+            getJeu()
+        }
+        else {
+            setShow(true)
+        }
     },[])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -66,6 +74,7 @@ function AddJeu({user, setUser}:UserProps) {
 
     return (
         <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
+            <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Ajouter un jeu" : `Modifier le jeu : ${initial.jeu_name}`}</Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>

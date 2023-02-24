@@ -7,6 +7,7 @@ import Button from "@mui/material/Button"
 import {useNavigate, useParams} from "react-router-dom"
 import {useState, useEffect} from "react"
 import CircularProgress from "@mui/material/CircularProgress"
+import Typography from "@mui/material/Typography"
 
 function AddCreneau({user, setUser}:UserProps) {
 
@@ -14,7 +15,9 @@ function AddCreneau({user, setUser}:UserProps) {
 
     const {id} = useParams()
 
-    const [creneau, setCreneau] = useState<{creneau_debut:Date,creneau_fin:Date}>({creneau_debut:new Date(),creneau_fin:new Date()})
+    const [creneau, setCreneau] = useState<{creneau_id:number,creneau_debut:string,creneau_fin:string}>({creneau_debut:"",creneau_fin:"",creneau_id:0})
+
+    const [initial, setInitial] = useState<{creneau_id:number,creneau_debut:string,creneau_fin:string}>({creneau_debut:"",creneau_fin:"",creneau_id:0})
 
     async function getCreneau() {
         if (id !== undefined) {
@@ -22,18 +25,24 @@ function AddCreneau({user, setUser}:UserProps) {
                 method: "GET"
             })
             const parseRes = await res.json()
-            setCreneau({creneau_debut:new Date(parseRes.creneau_debut),creneau_fin:new Date(parseRes.creneau_fin)})
+            setCreneau({creneau_id:parseRes.creneau_id,creneau_debut:parseRes.creneau_debut.slice(0, 19),creneau_fin:parseRes.creneau_fin.slice(0, 19)})
+            setInitial({creneau_id:parseRes.creneau_id,creneau_debut:parseRes.creneau_debut.slice(0, 19),creneau_fin:parseRes.creneau_fin.slice(0, 19)})
             setShow(true)
         }
     }
 
     useEffect(() => {
-        getCreneau()
+        if (id !== undefined) {
+            getCreneau()
+        }
+        else {
+            setShow(true)
+        }
     },[])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const body = {debut:creneau.creneau_debut.toUTCString(),fin:creneau.creneau_fin.toUTCString()}
+        const body = {debut:creneau.creneau_debut,fin:creneau.creneau_fin}
         if (id === undefined) {
             const res = await fetch("http://localhost:5000/creneau", {
                 method: "POST",
@@ -55,26 +64,49 @@ function AddCreneau({user, setUser}:UserProps) {
 
     return (
         <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
+            <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Ajouter un créneau" : `Modifier le créneau : ${initial.creneau_debut.toString().replace("T"," ").slice(0,16) + " - " + initial.creneau_fin.toString().replace("T"," ").slice(0,16)}`}</Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
-                    id="datetime-local"
-                    label="Début du créneau"
-                    type="datetime-local"
-                    value={creneau.creneau_debut.toISOString().substring(0, 16)}
-                    onChange={(e) => setCreneau({...creneau,creneau_debut:new Date(e.target.value)})}
+                    id="date1"
+                    label="Date de début"
+                    type="date"
+                    value={creneau.creneau_debut.slice(0,10)}
+                    onChange={(e) => setCreneau({...creneau,creneau_debut:`${e.target.value}T${creneau.creneau_debut.slice(11,19)}.000Z`})}
                     InputLabelProps={{shrink: true}}
                     fullWidth
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                    id="datetime-local"
-                    label="Fin du créneau"
-                    type="datetime-local"
-                    value={creneau.creneau_fin.toISOString().substring(0, 16)}
-                    onChange={(e) => setCreneau({...creneau,creneau_fin:new Date(e.target.value)})}
+                    id="time1"
+                    label="Heure de début"
+                    type="time"
+                    value={creneau.creneau_debut.slice(11,16)}
+                    onChange={(e) => setCreneau({...creneau,creneau_debut:`${creneau.creneau_debut.slice(0,10)}T${e.target.value}:00.000Z`})}
+                    InputLabelProps={{shrink: true}}
+                    fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                    id="date2"
+                    label="Date de fin"
+                    type="date"
+                    value={creneau.creneau_fin.slice(0,10)}
+                    onChange={(e) => setCreneau({...creneau,creneau_fin:`${e.target.value}T${creneau.creneau_fin.slice(11,19)}.000Z`})}
+                    InputLabelProps={{shrink: true}}
+                    fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                    id="time2"
+                    label="Heure de fin"
+                    type="time"
+                    value={creneau.creneau_fin.slice(11,16)}
+                    onChange={(e) => setCreneau({...creneau,creneau_fin:`${creneau.creneau_fin.slice(0,10)}T${e.target.value}:00.000Z`})}
                     InputLabelProps={{shrink: true}}
                     fullWidth
                 />

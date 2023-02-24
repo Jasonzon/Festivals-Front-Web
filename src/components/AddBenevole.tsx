@@ -7,6 +7,7 @@ import Button from "@mui/material/Button"
 import {useNavigate, useParams} from "react-router-dom"
 import {useState, useEffect} from "react"
 import CircularProgress from "@mui/material/CircularProgress"
+import Typography from "@mui/material/Typography"
 
 function AddBenevole({user, setUser}:UserProps) {
 
@@ -16,6 +17,8 @@ function AddBenevole({user, setUser}:UserProps) {
 
     const [benevole, setBenevole] = useState({benevole_nom:"",benevole_prenom:"",benevole_mail:"",benevole_id:0})
 
+    const [initial, setInitial] = useState({benevole_nom:"",benevole_prenom:"",benevole_mail:"",benevole_id:0})
+
     async function getBenevole() {
         if (id !== undefined) {
             const res = await fetch(`http://localhost:5000/benevole/${id}`, {
@@ -23,12 +26,18 @@ function AddBenevole({user, setUser}:UserProps) {
             })
             const parseRes = await res.json()
             setBenevole(parseRes)
+            setInitial(parseRes)
             setShow(true)
         }
     }
 
     useEffect(() => {
+      if (id !== undefined) {
         getBenevole()
+      }
+      else {
+        setShow(true)
+      }
     },[])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -55,6 +64,7 @@ function AddBenevole({user, setUser}:UserProps) {
 
     return (
         <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
+          <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Ajouter un bénévole" : `Modifier le bénévole : ${initial.benevole_prenom + " " + initial.benevole_nom}`}</Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>

@@ -7,6 +7,7 @@ import Button from "@mui/material/Button"
 import {useNavigate, useParams} from "react-router-dom"
 import {useState, useEffect} from "react"
 import CircularProgress from "@mui/material/CircularProgress"
+import Typography from "@mui/material/Typography"
 
 function AddZone({user, setUser}:UserProps) {
 
@@ -16,6 +17,8 @@ function AddZone({user, setUser}:UserProps) {
 
     const [zone, setZone] = useState({zone_id:0,zone_name:""})
 
+    const [initial, setInitial] = useState({zone_id:0,zone_name:""})
+
     async function getZone() {
         if (id !== undefined) {
             const res = await fetch(`http://localhost:5000/zone/${id}`, {
@@ -23,12 +26,18 @@ function AddZone({user, setUser}:UserProps) {
             })
             const parseRes = await res.json()
             setZone(parseRes)
+            setInitial(parseRes)
             setShow(true)
         }
     }
 
     useEffect(() => {
-        getZone()
+        if (id !== undefined) {
+            getZone()
+        }
+        else {
+            setShow(true)
+        }
     },[])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -55,6 +64,7 @@ function AddZone({user, setUser}:UserProps) {
 
     return (
         <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
+            <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Ajouter une zone" : `Modifier la zone : ${initial.zone_name}`}</Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>

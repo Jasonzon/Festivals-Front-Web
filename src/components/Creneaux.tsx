@@ -16,7 +16,7 @@ function Creneaux({user, setUser}:UserProps) {
 
     const navigate = useNavigate()
 
-    const [creneaux, setCreneaux] = useState([])
+    const [creneaux, setCreneaux] = useState<{creneau_id:number,creneau_debut:Date,creneau_fin:Date}[]>([])
 
     useEffect(() => {
         getCreneaux()
@@ -50,7 +50,7 @@ function Creneaux({user, setUser}:UserProps) {
                     <Link to={`/creneaux/${creneau_id}`} style={{color:"black",textDecoration:"none"}}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                             <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography gutterBottom variant="h5" component="h2">{creneau_debut.toString().slice(11,16) + " - " + creneau_fin.toString().slice(11,16)}</Typography>
+                                <Typography gutterBottom variant="h5" component="h2">{creneau_debut.toString().replace("T"," ").slice(0,16) + " - " + creneau_fin.toString().replace("T"," ").slice(0,16)}</Typography>
                             </CardContent>
                             {user.polyuser_role === "admin" &&
                             <CardActions>
