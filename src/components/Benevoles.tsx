@@ -51,10 +51,10 @@ function Benevoles({user, setUser, setOpen}:UserProps) {
 
     return (
         <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
-            <Box style={{marginBottom:"1rem"}}>
-                <Typography variant="h2" component="h2">Benevoles</Typography>
-                {user.polyuser_role === "admin" && <Button onClick={() => navigate("/benevoles/ajouter")} variant="contained">AJOUTER</Button>}
-                <TextField style={{marginLeft:"1rem"}} label="Recherche par nom" variant="outlined" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+            <Box sx={{py:8}} style={{marginBottom:"1rem"}}>
+                <Typography variant="h2" style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}}>Benevoles</Typography>
+                <TextField sx={{mx:2}} label="Recherche par nom" variant="outlined" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+                {user.polyuser_role === "admin" && <Button style={{padding:15}} onClick={() => navigate("/benevoles/ajouter")} variant="contained">AJOUTER</Button>}
             </Box>
             <Grid container spacing={4}>
                 {benevoles.filter(({benevole_nom,benevole_prenom,benevole_id,benevole_mail}) => benevole_nom.toLowerCase().includes(searchName.toLowerCase()) || benevole_prenom.toLowerCase().includes(searchName.toLowerCase()) || benevole_mail.toLowerCase().includes(searchName.toLowerCase())).map(({benevole_nom,benevole_prenom,benevole_id,benevole_mail},index) =>

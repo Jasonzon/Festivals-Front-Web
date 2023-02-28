@@ -63,9 +63,9 @@ function Zones({user, setUser, setOpen}:UserProps) {
     <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> :
         <Container sx={{ py: 8 }} maxWidth="md">
             <Box style={{marginBottom:"1rem"}}>
-                <Typography variant="h2" component="h2">Zones</Typography>
-                {user.polyuser_role === "admin" && <Button onClick={() => navigate("/zones/ajouter")} variant="contained" style={{marginBottom:"1rem"}}>AJOUTER</Button>}
+                <Typography variant="h2" style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}}>Zones</Typography>
                 <TextField style={{marginLeft:"1rem"}} label="Recherche par nom" variant="outlined" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+                {user.polyuser_role === "admin" && <Button sx={{ml:2,p:2}} onClick={() => navigate("/zones/ajouter")} variant="contained">AJOUTER</Button>}
             </Box>
             <Grid container spacing={4}>
                 {zones.sort((a:{zone_name:string,zone_id:number},b:{zone_name:string,zone_id:number}) => a.zone_name.localeCompare(b.zone_name)).filter(({zone_id,zone_name}) => zone_name.toLowerCase().includes(searchName.toLowerCase())).map(({zone_name,zone_id},index) => (

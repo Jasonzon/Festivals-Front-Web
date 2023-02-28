@@ -46,8 +46,8 @@ function Creneaux({user, setUser, setOpen}:UserProps) {
     return (
     <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> :
         <Container sx={{ py: 8 }} maxWidth="md">
-            <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">Creneaux</Typography>
-            {user.polyuser_role === "admin" && <Button onClick={() => navigate("/creneaux/ajouter")} variant="contained" style={{marginBottom:"1rem"}}>AJOUTER</Button>}
+            <Typography style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}} variant="h2" component="h2">Creneaux</Typography>
+            {user.polyuser_role === "admin" && <Button sx={{m:2,p:2}} onClick={() => navigate("/creneaux/ajouter")} variant="contained" style={{marginBottom:"1rem"}}>AJOUTER</Button>}
             <Grid container spacing={4}>
                 {creneaux.sort((a:{creneau_id:number,creneau_debut:Date,creneau_fin:Date},b:{creneau_id:number,creneau_debut:Date,creneau_fin:Date}) => new Date(a.creneau_debut).getTime() - new Date(b.creneau_debut).getTime()).map(({creneau_id,creneau_debut,creneau_fin}:{creneau_id:number,creneau_debut:Date,creneau_fin:Date},index) => (
                 <Grid item key={creneau_id} xs={12} sm={6} md={4}>

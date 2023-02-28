@@ -63,13 +63,13 @@ function Jeux({user, setUser, setOpen}:UserProps) {
 
   return (
     <Container> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> :
-      <Container sx={{ py: 8 }} maxWidth="md">
-        <Typography style={{marginBottom:"1rem"}} variant="h2" component="h2">Jeux</Typography>
-        {user.polyuser_role === "admin" && <Button onClick={() => navigate("/jeux/ajouter")} variant="contained" style={{marginBottom:"1rem"}}>AJOUTER</Button>}
+      <Container sx={{ py: 8 }}>
+        <Typography style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}} variant="h2" component="h2">Jeux</Typography>
         <Box>
-          <TextField label="Recherche par nom" variant="outlined" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
-          <TextField sx={{ ml: 2 }} label="Recherche par zone" variant="outlined" value={searchZone} onChange={(e) => setSearchZone(e.target.value)} />
-          <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+          <TextField sx={{m: 1}} label="Recherche par nom" variant="outlined" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+          <TextField sx={{m: 1}} label="Recherche par zone" variant="outlined" value={searchZone} onChange={(e) => setSearchZone(e.target.value)} />
+          {user.polyuser_role === "admin" && <Button sx={{padding:2, m:1}} onClick={() => navigate("/jeux/ajouter")} variant="contained">AJOUTER</Button>}
+          <FormControl sx={{m: 1}} component="fieldset" variant="standard">
               <FormLabel component="legend">Types</FormLabel>
               <FormGroup>
                 <FormControlLabel

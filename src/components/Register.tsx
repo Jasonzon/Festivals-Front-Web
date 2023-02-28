@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {UserProps} from "./App"
 import {Link, useNavigate} from "react-router-dom"
-import {useEffect} from "react"
+import {useState,useEffect} from "react"
 
 function Register({user, setUser, setOpen}:UserProps) {
 
@@ -18,26 +18,76 @@ function Register({user, setUser, setOpen}:UserProps) {
     }
   },[user])
 
+  const [validation, setValidation] = useState<boolean>(false)
+
+  const [mail, setMail] = useState<string>("")
+
+  const [nom, setNom] = useState<string>("")
+
+  const [prenom, setPrenom] = useState<string>("")
+
+  const [password, setPassword] = useState<string>("")
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const res = await fetch(`http://localhost:5000/polyuser/mail/${data.get("mail")}`, {
-      method: "GET"
-    })
-    const parseRes = await res.json()
-    if (parseRes.length === 0) {
-        const body = {mail:data.get("email"),nom:data.get("lastName"),prenom:data.get("firstName"),password:data.get("password")}
-        console.log(body)
-        const res2 = await fetch("http://localhost:5000/polyuser", {
-            method: "POST",
-            headers: {"Content-Type" : "application/json"},
-            body:JSON.stringify(body)
-        })
-        const parseRes2 = await res2.json()
-        localStorage.setItem("token",parseRes2.token)
-        setUser(parseRes2.rows[0])
+    if (!validation) setValidation(true)
+    if (checkMail() === "" && checkNom() === "" && checkPrenom() === "" && checkPassword() === "") {
+      const res = await fetch(`http://localhost:5000/polyuser/mail/${mail}`, {
+        method: "GET"
+      })
+      const parseRes = await res.json()
+      if (parseRes.length === 0) {
+          const body = {mail,nom,prenom,password}
+          const res2 = await fetch("http://localhost:5000/polyuser", {
+              method: "POST",
+              headers: {"Content-Type" : "application/json"},
+              body:JSON.stringify(body)
+          })
+          const parseRes2 = await res2.json()
+          localStorage.setItem("token",parseRes2.token)
+          setUser(parseRes2.rows[0])
+      }
     }
-  };
+  }
+
+  function checkMail() {
+    if (validation) {
+      if (mail.length === 0) {
+        return "Valeur manquante"
+      }
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
+        return "Mail incorrect"
+      }
+    }
+    return ""
+  }
+
+  function checkNom() {
+    if (validation) {
+      if (nom.length === 0) {
+        return "Valeur manquante"
+      }
+    }
+    return ""
+  }
+
+  function checkPrenom() {
+    if (validation) {
+      if (prenom.length === 0) {
+        return "Valeur manquante"
+      }
+    }
+    return ""
+  }
+
+  function checkPassword() {
+    if (validation) {
+      if (password.length === 0) {
+        return "Valeur manquante"
+      }
+    }
+    return ""
+  }
 
   return (
       <Container component="main" maxWidth="xs">
@@ -55,6 +105,10 @@ function Register({user, setUser, setOpen}:UserProps) {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  value={prenom}
+                  onChange={(e) => setPrenom(e.target.value)}
+                  error={checkPrenom() !== ""}
+                  helperText={checkPrenom()}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -65,6 +119,10 @@ function Register({user, setUser, setOpen}:UserProps) {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  value={nom}
+                  onChange={(e) => setNom(e.target.value)}
+                  error={checkNom() !== ""}
+                  helperText={checkNom()}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -75,6 +133,10 @@ function Register({user, setUser, setOpen}:UserProps) {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  value={mail}
+                  onChange={(e) => setMail(e.target.value)}
+                  error={checkMail() !== ""}
+                  helperText={checkMail()}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -86,6 +148,10 @@ function Register({user, setUser, setOpen}:UserProps) {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  error={checkPassword() !== ""}
+                  helperText={checkPassword()}
                 />
               </Grid>
             </Grid>
