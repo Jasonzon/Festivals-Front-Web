@@ -90,7 +90,7 @@ function Desaffectation({user, setUser, setOpen}:UserProps) {
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography variant="h3" style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}}>Désaffecter le jeu {jeu.jeu_name}</Typography>
+                <Typography variant="h3" style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}}>{jeu.jeu_name}</Typography>
               </Grid>
               <Grid item xs={12}>
               <FormControl fullWidth>

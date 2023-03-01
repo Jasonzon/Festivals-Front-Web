@@ -42,32 +42,44 @@ function AddJeu({user, setUser, setOpen}:UserProps) {
         }
     },[])
 
+    const [validation, setValidation] = useState<boolean>(false)
+
+    function checkJeu() {
+        if (jeu.jeu_name.length === 0) {
+            return "Valeur manquante"
+        }
+        return ""
+    }
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const body = {name:jeu.jeu_name,type:jeu.jeu_type}
-        if (id === undefined) {
-            const res = await fetch("http://localhost:5000/jeu", {
-                method: "POST",
-                headers: {"Content-Type" : "application/json",token: localStorage.token},
-                body:JSON.stringify(body)
-            })
-            if (res.status === 401) {
-                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
-                setOpen(true)
-              }
+        if (checkJeu() === "") {
+            const body = {name:jeu.jeu_name,type:jeu.jeu_type}
+            if (id === undefined) {
+                const res = await fetch("http://localhost:5000/jeu", {
+                    method: "POST",
+                    headers: {"Content-Type" : "application/json",token: localStorage.token},
+                    body:JSON.stringify(body)
+                })
+                if (res.status === 401) {
+                    setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                    setOpen(true)
+                }
+            }
+            else {
+                const res = await fetch(`http://localhost:5000/jeu/${id}`, {
+                    method: "PUT",
+                    headers: {"Content-Type" : "application/json",token: localStorage.token},
+                    body:JSON.stringify(body)
+                })
+                if (res.status === 401) {
+                    setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                    setOpen(true)
+                }
+            }
+            navigate("/jeux")
         }
-        else {
-            const res = await fetch(`http://localhost:5000/jeu/${id}`, {
-                method: "PUT",
-                headers: {"Content-Type" : "application/json",token: localStorage.token},
-                body:JSON.stringify(body)
-            })
-            if (res.status === 401) {
-                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
-                setOpen(true)
-              }
-        }
-        navigate("/jeux")
+        if (!validation) setValidation(true)
     }
 
     const [show, setShow] = useState<boolean>(false)
@@ -82,10 +94,12 @@ function AddJeu({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   id="name"
-                  label="Name"
+                  label="Nom"
                   name="name"
                   value={jeu.jeu_name}
                   onChange={(e) => setJeu({...jeu,jeu_name:e.target.value})}
+                  error={validation && checkJeu() !== ""}
+                  helperText={validation && checkJeu()}
                 />
               </Grid>
               <Grid item xs={12}>

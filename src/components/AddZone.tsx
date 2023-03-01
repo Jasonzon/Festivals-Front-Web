@@ -40,32 +40,44 @@ function AddZone({user, setUser, setOpen}:UserProps) {
         }
     },[])
 
+    const [validation, setValidation] = useState<boolean>(false)
+
+    function checkZone() {
+        if (zone.zone_name.length === 0) {
+            return "Valeur manquante"
+        }
+        return ""
+    }
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const body = {name:zone.zone_name}
-        if (id === undefined) {
-            const res = await fetch("http://localhost:5000/zone", {
-                method: "POST",
-                headers: {"Content-Type" : "application/json",token: localStorage.token},
-                body:JSON.stringify(body)
-            })
-            if (res.status === 401) {
-                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
-                setOpen(true)
-              }
+        if (checkZone() === "") {
+            const body = {name:zone.zone_name}
+            if (id === undefined) {
+                const res = await fetch("http://localhost:5000/zone", {
+                    method: "POST",
+                    headers: {"Content-Type" : "application/json",token: localStorage.token},
+                    body:JSON.stringify(body)
+                })
+                if (res.status === 401) {
+                    setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                    setOpen(true)
+                }
+            }
+            else {
+                const res = await fetch(`http://localhost:5000/zone/${id}`, {
+                    method: "PUT",
+                    headers: {"Content-Type" : "application/json",token: localStorage.token},
+                    body:JSON.stringify(body)
+                })
+                if (res.status === 401) {
+                    setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                    setOpen(true)
+                }
+            }
+            navigate("/zones")
         }
-        else {
-            const res = await fetch(`http://localhost:5000/zone/${id}`, {
-                method: "PUT",
-                headers: {"Content-Type" : "application/json",token: localStorage.token},
-                body:JSON.stringify(body)
-            })
-            if (res.status === 401) {
-                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
-                setOpen(true)
-              }
-        }
-        navigate("/zones")
+        if (!validation) setValidation(true)
     }
 
     const [show, setShow] = useState<boolean>(false)
@@ -80,10 +92,12 @@ function AddZone({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   id="name"
-                  label="Name"
+                  label="Nom"
                   name="name"
                   value={zone.zone_name}
                   onChange={(e) => setZone({...zone,zone_name:e.target.value})}
+                  error={validation && checkZone() !== ""}
+                  helperText={validation && checkZone()}
                 />
               </Grid>
             </Grid>

@@ -111,7 +111,7 @@ function Travail({user, setUser, setOpen}:UserProps) {
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography variant="h2" component="h2">{benevole.benevole_prenom + " " + benevole.benevole_nom}</Typography>
+                    <Typography style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}} variant="h3">{benevole.benevole_prenom + " " + benevole.benevole_nom}</Typography>
                   </Grid>
                   <Grid item xs={12}>
                   <FormControl fullWidth>

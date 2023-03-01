@@ -30,7 +30,6 @@ function Register({user, setUser, setOpen}:UserProps) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!validation) setValidation(true)
     if (checkMail() === "" && checkNom() === "" && checkPrenom() === "" && checkPassword() === "") {
       const res = await fetch(`http://localhost:5000/polyuser/mail/${mail}`, {
         method: "GET"
@@ -48,43 +47,36 @@ function Register({user, setUser, setOpen}:UserProps) {
           setUser(parseRes2.rows[0])
       }
     }
+    if (!validation) setValidation(true)
   }
 
   function checkMail() {
-    if (validation) {
-      if (mail.length === 0) {
-        return "Valeur manquante"
-      }
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
-        return "Mail incorrect"
-      }
+    if (mail.length === 0) {
+      return "Valeur manquante"
+    }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
+      return "Mail invalide"
     }
     return ""
   }
 
   function checkNom() {
-    if (validation) {
-      if (nom.length === 0) {
-        return "Valeur manquante"
-      }
+    if (nom.length === 0) {
+      return "Valeur manquante"
     }
     return ""
   }
 
   function checkPrenom() {
-    if (validation) {
-      if (prenom.length === 0) {
-        return "Valeur manquante"
-      }
+    if (prenom.length === 0) {
+      return "Valeur manquante"
     }
     return ""
   }
 
   function checkPassword() {
-    if (validation) {
-      if (password.length === 0) {
-        return "Valeur manquante"
-      }
+    if (password.length === 0) {
+      return "Valeur manquante"
     }
     return ""
   }
@@ -93,7 +85,7 @@ function Register({user, setUser, setOpen}:UserProps) {
       <Container component="main" maxWidth="xs">
         <Box
           sx={{marginTop: 8,display: 'flex',flexDirection: 'column',alignItems: 'center',}}>
-          <Typography component="h1" variant="h5">Sign up</Typography>
+          <Typography component="h1" variant="h5">Enregistrement</Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -103,12 +95,12 @@ function Register({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="Prénom"
                   autoFocus
                   value={prenom}
                   onChange={(e) => setPrenom(e.target.value)}
-                  error={checkPrenom() !== ""}
-                  helperText={checkPrenom()}
+                  error={validation && checkPrenom() !== ""}
+                  helperText={validation && checkPrenom()}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -116,13 +108,13 @@ function Register({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
+                  label="Nom"
                   name="lastName"
                   autoComplete="family-name"
                   value={nom}
                   onChange={(e) => setNom(e.target.value)}
-                  error={checkNom() !== ""}
-                  helperText={checkNom()}
+                  error={validation && checkNom() !== ""}
+                  helperText={validation && checkNom()}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -130,13 +122,13 @@ function Register({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Mail"
                   name="email"
                   autoComplete="email"
                   value={mail}
                   onChange={(e) => setMail(e.target.value)}
-                  error={checkMail() !== ""}
-                  helperText={checkMail()}
+                  error={validation && checkMail() !== ""}
+                  helperText={validation && checkMail()}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -144,14 +136,14 @@ function Register({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Mot de passe"
                   type="password"
                   id="password"
                   autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  error={checkPassword() !== ""}
-                  helperText={checkPassword()}
+                  error={validation && checkPassword() !== ""}
+                  helperText={validation && checkPassword()}
                 />
               </Grid>
             </Grid>
@@ -161,12 +153,12 @@ function Register({user, setUser, setOpen}:UserProps) {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              ENREGISTREMENT
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link to="/connect" style={{textDecoration:"underline",color:"black"}}>
-                  Already have an account? Sign in
+                  Déjà un compte ? Se connecter
                 </Link>
               </Grid>
             </Grid>

@@ -89,7 +89,7 @@ function Affectation({user, setUser, setOpen}:UserProps) {
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}} variant="h3">Affecter le jeu {jeu.jeu_name}</Typography>
+                <Typography style={{marginBottom:"1rem", flexGrow:1,textAlign:"center"}} variant="h3">{jeu.jeu_name}</Typography>
               </Grid>
               <Grid item xs={12}>
               <FormControl fullWidth>

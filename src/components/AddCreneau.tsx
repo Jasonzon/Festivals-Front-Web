@@ -15,7 +15,7 @@ function AddCreneau({user, setUser, setOpen}:UserProps) {
 
     const {id} = useParams()
 
-    const [creneau, setCreneau] = useState<{creneau_id:number,creneau_debut:string,creneau_fin:string}>({creneau_debut:"",creneau_fin:"",creneau_id:0})
+    const [creneau, setCreneau] = useState<{creneau_id:number,creneau_debut:string,creneau_fin:string}>({creneau_debut:new Date().toISOString(),creneau_fin:new Date().toISOString(),creneau_id:0})
 
     const [initial, setInitial] = useState<{creneau_id:number,creneau_debut:string,creneau_fin:string}>({creneau_debut:"",creneau_fin:"",creneau_id:0})
 

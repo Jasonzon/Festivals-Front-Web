@@ -26,7 +26,7 @@ function CreneauBenevoles({creneau_id,creneau_debut,creneau_fin}:creneau) {
 
     return (
         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <CardHeader title={creneau_debut.toString().slice(0,16) + " - " + creneau_fin.toString().slice(0,16)}/>
+            <CardHeader title={creneau_debut.toString().slice(0,16).replace("T"," ") + " - " + creneau_fin.toString().slice(0,16).replace("T"," ")}/>
             <CardContent sx={{ flexGrow: 1 }}>
                 {benevoles.map(({benevole_id,benevole_nom,benevole_prenom,benevole_mail}) => 
                     <Typography key={benevole_id} gutterBottom>{benevole_prenom + " " + benevole_nom}</Typography>

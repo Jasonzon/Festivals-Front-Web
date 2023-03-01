@@ -19,6 +19,8 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
 
     const [initial, setInitial] = useState({benevole_nom:"",benevole_prenom:"",benevole_mail:"",benevole_id:0})
 
+    const [validation, setValidation] = useState<boolean>(false)
+
     async function getBenevole() {
         if (id !== undefined) {
             const res = await fetch(`http://localhost:5000/benevole/${id}`, {
@@ -40,8 +42,33 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
       }
     },[])
 
+    function checkPrenom() {
+      if (benevole.benevole_prenom.length === 0) {
+        return "Valeur manquante"
+      }
+      return ""
+    }
+
+    function checkNom() {
+      if (benevole.benevole_nom.length === 0) {
+        return "Valeur manquante"
+      }
+      return ""
+    }
+
+    function checkMail() {
+      if (benevole.benevole_mail.length === 0) {
+        return "Valeur manquante"
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(benevole.benevole_mail)) {
+        return "Mail invalide"
+      }
+      return ""
+    }
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
+      event.preventDefault()
+      if (checkMail() === "" && checkNom() === "" && checkPrenom() === "") {
         const body = {nom:benevole.benevole_nom,prenom:benevole.benevole_prenom,mail:benevole.benevole_mail}
         if (id === undefined) {
             const res = await fetch("http://localhost:5000/benevole", {
@@ -66,6 +93,8 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
             }
         }
         navigate("/benevoles")
+      }
+      if (!validation) setValidation(true)
     }
 
     const [show, setShow] = useState<boolean>(false)
@@ -82,10 +111,12 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="Prénom"
                   autoFocus
                   value={benevole.benevole_prenom}
                   onChange={(e) => setBenevole({...benevole,benevole_prenom:e.target.value})}
+                  error={validation && checkPrenom() !== ""}
+                  helperText={validation && checkPrenom()}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -93,11 +124,13 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
+                  label="Nom"
                   name="lastName"
                   autoComplete="family-name"
                   value={benevole.benevole_nom}
                   onChange={(e) => setBenevole({...benevole,benevole_nom:e.target.value})}
+                  error={validation && checkNom() !== ""}
+                  helperText={validation && checkNom()}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -105,11 +138,13 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Mail"
                   name="email"
                   autoComplete="email"
                   value={benevole.benevole_mail}
                   onChange={(e) => setBenevole({...benevole,benevole_mail:e.target.value})}
+                  error={validation && checkMail() !== ""}
+                  helperText={validation && checkMail()}
                 />
               </Grid>
             </Grid>
