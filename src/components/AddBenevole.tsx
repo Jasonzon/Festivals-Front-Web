@@ -21,6 +21,8 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
 
     const [validation, setValidation] = useState<boolean>(false)
 
+    const [existing, setExisting] = useState<boolean>(false)
+
     async function getBenevole() {
         if (id !== undefined) {
             const res = await fetch(`http://localhost:5000/benevole/${id}`, {
@@ -57,6 +59,9 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
     }
 
     function checkMail() {
+      if (existing) {
+        return "Mail déjà utilisé"
+      }
       if (benevole.benevole_mail.length === 0) {
         return "Valeur manquante"
       }
@@ -80,6 +85,9 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
               setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
               setOpen(true)
             }
+            if (res.status === 409) {
+              setExisting(true)
+            }
         }
         else {
             const res = await fetch(`http://localhost:5000/benevole/${id}`, {
@@ -91,6 +99,9 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
               setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
               setOpen(true)
             }
+            if (res.status === 409) {
+              setExisting(true)
+            }
         }
         navigate("/benevoles")
       }
@@ -101,7 +112,7 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
 
     return (
         <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
-          <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Ajouter un bénévole" : `Modifier le bénévole : ${initial.benevole_prenom + " " + initial.benevole_nom}`}</Typography>
+          <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Nouveau bénévole" : initial.benevole_prenom + " " + initial.benevole_nom}</Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -142,7 +153,7 @@ function AddBenevole({user, setUser, setOpen}:UserProps) {
                   name="email"
                   autoComplete="email"
                   value={benevole.benevole_mail}
-                  onChange={(e) => setBenevole({...benevole,benevole_mail:e.target.value})}
+                  onChange={(e) => {if (existing)setExisting(false);setBenevole({...benevole,benevole_mail:e.target.value})}}
                   error={validation && checkMail() !== ""}
                   helperText={validation && checkMail()}
                 />

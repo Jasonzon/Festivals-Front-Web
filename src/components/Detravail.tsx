@@ -102,7 +102,7 @@ function Detravail({user, setUser, setOpen}:UserProps) {
                         onChange={(e) => setCreneau(Number(e.target.value))}
                     >
                         {travaux.map(({travail_id,travail_zone,travail_creneau,creneau_debut,creneau_fin}) => 
-                            <MenuItem key={travail_creneau} value={travail_creneau}>{creneau_debut.toString().slice(11,16) + " - " + creneau_fin.toString().slice(11,16)}</MenuItem>
+                            <MenuItem key={travail_creneau} value={travail_creneau}>{creneau_debut.toString().slice(0,16).replace("T"," ") + " - " + creneau_fin.toString().slice(0,16).replace("T"," ")}</MenuItem>
                         )}
                         {creneau === 0 && <MenuItem value={0}>Pas de créneaux</MenuItem>}
                     </Select>

@@ -28,29 +28,33 @@ function Register({user, setUser, setOpen}:UserProps) {
 
   const [password, setPassword] = useState<string>("")
 
+  const [existing, setExisting] = useState<boolean>(false)
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (checkMail() === "" && checkNom() === "" && checkPrenom() === "" && checkPassword() === "") {
-      const res = await fetch(`http://localhost:5000/polyuser/mail/${mail}`, {
-        method: "GET"
+      const body = {mail,nom,prenom,password}
+      const res = await fetch("http://localhost:5000/polyuser", {
+          method: "POST",
+          headers: {"Content-Type" : "application/json"},
+          body:JSON.stringify(body)
       })
-      const parseRes = await res.json()
-      if (parseRes.length === 0) {
-          const body = {mail,nom,prenom,password}
-          const res2 = await fetch("http://localhost:5000/polyuser", {
-              method: "POST",
-              headers: {"Content-Type" : "application/json"},
-              body:JSON.stringify(body)
-          })
-          const parseRes2 = await res2.json()
-          localStorage.setItem("token",parseRes2.token)
-          setUser(parseRes2.rows[0])
+      if (res.status === 409) {
+        setExisting(true)
+      }
+      else {
+        const parseRes = await res.json()
+        localStorage.setItem("token",parseRes.token)
+        setUser(parseRes.rows[0])
       }
     }
     if (!validation) setValidation(true)
   }
 
   function checkMail() {
+    if (existing) {
+      return "Mail déjà utilisé"
+    }
     if (mail.length === 0) {
       return "Valeur manquante"
     }
@@ -126,7 +130,7 @@ function Register({user, setUser, setOpen}:UserProps) {
                   name="email"
                   autoComplete="email"
                   value={mail}
-                  onChange={(e) => setMail(e.target.value)}
+                  onChange={(e) => {if (existing) setExisting(false);setMail(e.target.value)}}
                   error={validation && checkMail() !== ""}
                   helperText={validation && checkMail()}
                 />

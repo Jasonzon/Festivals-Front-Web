@@ -72,7 +72,7 @@ function AddCreneau({user, setUser, setOpen}:UserProps) {
 
     return (
         <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
-            <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Ajouter un créneau" : `Modifier le créneau : ${initial.creneau_debut.toString().replace("T"," ").slice(0,16) + " - " + initial.creneau_fin.toString().replace("T"," ").slice(0,16)}`}</Typography>
+            <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Nouveau créneau" : initial.creneau_debut.toString().replace("T"," ").slice(0,16) + " - " + initial.creneau_fin.toString().replace("T"," ").slice(0,16)}</Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>

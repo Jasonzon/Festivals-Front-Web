@@ -124,7 +124,7 @@ function Travail({user, setUser, setOpen}:UserProps) {
                         onChange={(e) => setCreneau(Number(e.target.value))}
                     >
                         {finalCreneaux.map(({creneau_id,creneau_debut,creneau_fin}) => 
-                            <MenuItem key={creneau_id} value={creneau_id}>{creneau_debut.toString().slice(11,16) + " - " + creneau_fin.toString().slice(11,16)}</MenuItem>
+                            <MenuItem key={creneau_id} value={creneau_id}>{creneau_debut.toString().slice(0,16).replace("T"," ") + " - " + creneau_fin.toString().slice(0,16).replace("T"," ")}</MenuItem>
                         )}
                         {creneau === 0 && <MenuItem value={0}>Pas de créneaux</MenuItem>}
                     </Select>
