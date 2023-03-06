@@ -15,9 +15,11 @@ function AddCreneau({user, setUser, setOpen}:UserProps) {
 
     const {id} = useParams()
 
-    const [creneau, setCreneau] = useState<{creneau_id:number,creneau_debut:string,creneau_fin:string}>({creneau_debut:new Date().toISOString(),creneau_fin:new Date().toISOString(),creneau_id:0})
+    const [creneau, setCreneau] = useState<{creneau_id:number,creneau_debut:string,creneau_fin:string}>({creneau_debut:new Date().toISOString(),creneau_fin:new Date(new Date().setHours(new Date().getHours()+1)).toISOString(),creneau_id:0})
 
     const [initial, setInitial] = useState<{creneau_id:number,creneau_debut:string,creneau_fin:string}>({creneau_debut:"",creneau_fin:"",creneau_id:0})
+
+    const [validation, setValidation] = useState<boolean>(false)
 
     async function getCreneau() {
         if (id !== undefined) {
@@ -40,38 +42,48 @@ function AddCreneau({user, setUser, setOpen}:UserProps) {
         }
     },[])
 
+    function check() {
+        if (creneau.creneau_debut >= creneau.creneau_fin) {
+            return "Créneau invalide"
+        }
+        return ""
+    }
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const body = {debut:creneau.creneau_debut,fin:creneau.creneau_fin}
-        if (id === undefined) {
-            const res = await fetch("http://localhost:5000/creneau", {
-                method: "POST",
-                headers: {"Content-Type" : "application/json",token: localStorage.token},
-                body:JSON.stringify(body)
-            })
-            if (res.status === 401) {
-                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
-                setOpen(true)
-              }
+        if (check() === "") {
+            const body = {debut:creneau.creneau_debut,fin:creneau.creneau_fin}
+            if (id === undefined) {
+                const res = await fetch("http://localhost:5000/creneau", {
+                    method: "POST",
+                    headers: {"Content-Type" : "application/json",token: localStorage.token},
+                    body:JSON.stringify(body)
+                })
+                if (res.status === 401) {
+                    setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                    setOpen(true)
+                }
+            }
+            else {
+                const res = await fetch(`http://localhost:5000/creneau/${id}`, {
+                    method: "PUT",
+                    headers: {"Content-Type" : "application/json",token: localStorage.token},
+                    body:JSON.stringify(body)
+                })
+                if (res.status === 401) {
+                    setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
+                    setOpen(true)
+                }
+            }
+            navigate("/creneaux")
         }
-        else {
-            const res = await fetch(`http://localhost:5000/creneau/${id}`, {
-                method: "PUT",
-                headers: {"Content-Type" : "application/json",token: localStorage.token},
-                body:JSON.stringify(body)
-            })
-            if (res.status === 401) {
-                setUser({polyuser_id:0,polyuser_nom:"",polyuser_prenom:"",polyuser_mail:"",polyuser_role:""})
-                setOpen(true)
-              }
-        }
-        navigate("/creneaux")
+        if (!validation) setValidation(true)
     }
 
     const [show, setShow] = useState<boolean>(false)
 
     return (
-        <Container maxWidth="xs"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
+        <Container maxWidth="sm"> {!show ? <Container sx={{display: 'flex',justifyContent: 'center',alignItems: 'center',height: '100vh'}}><CircularProgress/></Container> : <Container>
             <Typography variant="h4" style={{marginTop:"1rem",textAlign:"center",flexGrow:1}}>{id === undefined ? "Nouveau créneau" : initial.creneau_debut.toString().replace("T"," ").slice(0,16) + " - " + initial.creneau_fin.toString().replace("T"," ").slice(0,16)}</Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={3}>
@@ -106,6 +118,8 @@ function AddCreneau({user, setUser, setOpen}:UserProps) {
                     onChange={(e) => setCreneau({...creneau,creneau_fin:`${e.target.value}T${creneau.creneau_fin.slice(11,19)}.000Z`})}
                     InputLabelProps={{shrink: true}}
                     fullWidth
+                    error={validation && check() !== ""}
+                    helperText={validation && check()}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -117,6 +131,8 @@ function AddCreneau({user, setUser, setOpen}:UserProps) {
                     onChange={(e) => setCreneau({...creneau,creneau_fin:`${creneau.creneau_fin.slice(0,10)}T${e.target.value}:00.000Z`})}
                     InputLabelProps={{shrink: true}}
                     fullWidth
+                    error={validation && check() !== ""}
+                    helperText={validation && check()}
                 />
               </Grid>
             </Grid>
