@@ -7,8 +7,8 @@ import Container from '@mui/material/Container';
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box"
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import FormGroup from "@mui/material/FormGroup";
+import Select from "@mui/material/Select"
+import InputLabel from "@mui/material/InputLabel"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button"
@@ -68,35 +68,35 @@ function Jeux({user, setUser, setOpen}:UserProps) {
         <Box>
           <TextField sx={{m: 1}} label="Recherche par nom" variant="outlined" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
           <TextField sx={{m: 1}} label="Recherche par zone" variant="outlined" value={searchZone} onChange={(e) => setSearchZone(e.target.value)} />
-          {user.polyuser_role === "admin" && <Button sx={{padding:2, m:1}} onClick={() => navigate("/jeux/ajouter")} variant="contained">AJOUTER</Button>}
-          <FormControl sx={{m: 1}} component="fieldset" variant="standard">
-              <FormLabel component="legend">Types</FormLabel>
-              <FormGroup>
-                <FormControlLabel
+          <FormControl sx={{m:1, width:100}}>
+            <InputLabel>Types</InputLabel>
+            <Select label="Types">
+              <FormControlLabel
                   control={<Checkbox checked={check2.enfant} onChange={() => setCheck2({...check2,enfant:!check2.enfant})}/>}
                   label="enfant"
-                />    
-                <FormControlLabel
-                  control={<Checkbox checked={check2.famille} onChange={() => setCheck2({...check2,famille:!check2.famille})}/>}
-                  label="famille"
-                />
-                <FormControlLabel
-                  control={<Checkbox checked={check2.ambiance} onChange={() => setCheck2({...check2,ambiance:!check2.ambiance})}/>}
-                  label="ambiance"
-                />    
-                <FormControlLabel
-                  control={<Checkbox checked={check2.initie} onChange={() => setCheck2({...check2,initie:!check2.initie})}/>}
-                  label="initie"
-                />    
-                <FormControlLabel
-                  control={<Checkbox checked={check2.expert} onChange={() => setCheck2({...check2,expert:!check2.expert})}/>}
-                  label="expert"
-                />        
-              </FormGroup>
+              />    
+              <FormControlLabel
+                control={<Checkbox checked={check2.famille} onChange={() => setCheck2({...check2,famille:!check2.famille})}/>}
+                label="famille"
+              />
+              <FormControlLabel
+                control={<Checkbox checked={check2.ambiance} onChange={() => setCheck2({...check2,ambiance:!check2.ambiance})}/>}
+                label="ambiance"
+              />    
+              <FormControlLabel
+                control={<Checkbox checked={check2.initie} onChange={() => setCheck2({...check2,initie:!check2.initie})}/>}
+                label="initie"
+              />    
+              <FormControlLabel
+                control={<Checkbox checked={check2.expert} onChange={() => setCheck2({...check2,expert:!check2.expert})}/>}
+                label="expert"
+              />      
+            </Select>
           </FormControl>
+          {user.polyuser_role === "admin" && <Button sx={{padding:2, m:1}} onClick={() => navigate("/jeux/ajouter")} variant="contained">AJOUTER</Button>}
         </Box>
         <Grid container spacing={4}>
-          {jeux.filter(({jeu_id,jeu_name,jeu_type,zones_affectees}:{jeu_id:number,jeu_name:string,jeu_type:keyof TypeJeu,zones_affectees:string[]}) => (zones_affectees.length === 0 || zones_affectees.some((zone) => zone.toLowerCase().includes(searchZone.toLowerCase()))) && check2[jeu_type] && jeu_name.toLowerCase().includes(searchName.toLowerCase())).map(({jeu_id,jeu_name,jeu_type,zones_affectees},index) => (
+          {jeux.filter(({jeu_id,jeu_name,jeu_type,zones_affectees}:{jeu_id:number,jeu_name:string,jeu_type:keyof TypeJeu,zones_affectees:string[]}) => ((searchZone === "" && zones_affectees.length === 0 ) || (searchZone !== " " && zones_affectees.some((zone) => zone.toLowerCase().includes(searchZone.toLowerCase())))) && check2[jeu_type] && jeu_name.toLowerCase().includes(searchName.toLowerCase())).map(({jeu_id,jeu_name,jeu_type,zones_affectees},index) => (
             <Grid item key={jeu_id} xs={12} sm={6} md={4}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent sx={{ flexGrow: 1 }}>

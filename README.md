@@ -1,47 +1,34 @@
-# Getting Started with Create React App
+# Festivals Front - Jason MORET IG4
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ce répertoire contient tous les fichiers nécessaires à la partie Client du projet
 
-## Available Scripts
+## Technos
 
-In the project directory, you can run:
+Le framework ReactJs a été utilisé, avec le template TypeScript
+Certains composants sont importés de la librairie MaterialUI pour React
 
-### `npm start`
+## Organisation des fichiers
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Tous les composants se trouvent dans le dossier `/src/components`
+Ils sont tous utilisés dans le composant `App.tsx`, qui organise l'application avec le React Routing.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Fonctionnalités
 
-### `npm test`
+Les fonctionnalités demandées sont toutes implémentées, et certaines sont en bonus
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Gestion des jeux, zones, bénévoles et créneaux
+2. Gestion des affectations de jeux et bénévoles
+3. Login et Register, impossible d'ajouter ou modifier un row de la bd sans être connecté en tant qu'admin
+4. Gestion du token dans le localStorage, et reconnexion automatique selon sa validité
+5. Gestion des inputs, validation de tous les champs et affichage d'erreurs
+6. Spinners / Loaders ajoutés lors des call API pour améliorer l'UX
+7. UI efficace et responsive
 
-### `npm run build`
+Les call API sont dirigés vers le port 5000 de localhost
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Lancement du projet
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Pour pouvoir espérer lancer le projet, il faut que l'API festivals-back et la base de données soient présents sur votre machine, et démarrés
+Il suffit ensuite d'installer toutes les dépendances avec `npm install` et enfin d'éxécuter `npm start`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-# festivals-front
+L'application sera disponible sur le port 3000
